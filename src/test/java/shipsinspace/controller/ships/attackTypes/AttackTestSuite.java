@@ -1,12 +1,17 @@
 package shipsinspace.controller.ships.attackTypes;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import shipsinspace.common.Coordinates;
 
 public class AttackTestSuite {
+    @BeforeClass
+    public static void beforeAllTests() {
+        System.out.println("Starting Attack objects test suite...");
+    }
+    @AfterClass
+    public static void afterAllTests() {
+        System.out.println("Attack objects test suite COMPLETE.");
+    }
     @Before
     public void beforeEachTest() {
         System.out.print("Now testing: ");

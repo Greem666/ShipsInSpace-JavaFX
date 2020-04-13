@@ -1,0 +1,34 @@
+.gameOverText {
+    -fx-font-family: Verdana;
+    -fx-font-size: 30;
+    -fx-font-weight: bold;
+    -fx-text-fill: #fdff6500;
+    -fx-stroke: yellow;
+    -fx-stroke-width: 1px;
+}
+
+.gameOverButtons {
+    -fx-background-color: #ffffff00;
+    -fx-border-color: #fdff65e0;
+    -fx-border-radius: 25;
+    -fx-background-insets: 0,1,4,5;
+    -fx-background-radius: 9,8,5,4;
+    -fx-padding: 15 15 15 15;
+    -fx-max-width: 400px;
+    -fx-font-family: "Verdana";
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: yellow;
+}
+
+.gameOverButtons:hover {
+    -fx-border-color: #ffde65e0;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+
+}
+
+.gameOverButtons:pressed {
+    -fx-scale-y: 0.9;
+    -fx-scale-x: 0.9;
+}
