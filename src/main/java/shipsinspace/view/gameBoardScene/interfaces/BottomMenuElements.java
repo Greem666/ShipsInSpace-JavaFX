@@ -6,5 +6,5 @@ public interface BottomMenuElements {
     /**
      * Interface for all elements of the bottom panel to follow.
      */
-    Region generateElement(double iconSize);
+    Region generateElement();
 }

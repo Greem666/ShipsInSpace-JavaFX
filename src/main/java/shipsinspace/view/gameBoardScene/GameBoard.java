@@ -27,15 +27,15 @@ public class GameBoard {
         GameRegister gameRegister = GameRegister.getInstance();
 //        GameController backEnd = gameRegister.getGameController();
 
-        Board board = new Board(this.backEnd);
-        BottomMenu bottomMenu = new BottomMenu();
+        Board board = new Board(this.backEnd, 600, 600);
+        BottomMenu bottomMenu = new BottomMenu(600, 200, 10);
 
         // GAME SECTION
 
         // window
         BorderPane windowLayout = new BorderPane();
-        windowLayout.setCenter(board.generateElement(WINDOW_WIDTH, WINDOW_HEIGHT, 11));
-        windowLayout.setBottom(bottomMenu.generateElement(WINDOW_WIDTH, WINDOW_HEIGHT, 11));
+        windowLayout.setCenter(board.generateElement());
+        windowLayout.setBottom(bottomMenu.generateElement());
 
         // Scene
         Scene gameScene = new Scene(windowLayout, WINDOW_WIDTH, WINDOW_HEIGHT);

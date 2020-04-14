@@ -10,23 +10,35 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
+import shipsinspace.gameRegister.GameRegister;
 import shipsinspace.view.gameBoardScene.interfaces.BottomMenuElements;
 
 public class ShipsStatusPanel implements BottomMenuElements {
 
     private String shipsOwner;
+    private Image shipImage;
+    private double iconSize;
+    private GameRegister gameRegister;
 
-    public ShipsStatusPanel(String shipsOwner) {
+    public ShipsStatusPanel(String shipsOwner, String shipImageName, double iconSize) {
         this.shipsOwner = shipsOwner;
+        this.iconSize = iconSize;
+        this.shipImage = new Image(getClass().getResourceAsStream("/ships/" + shipImageName), iconSize, iconSize, true, true);
+        this.gameRegister = GameRegister.getInstance();
     }
 
     @Override
-    public Region generateElement(double iconSize) {
+    public Region generateElement() {
         // PLAYER SHIPS SECTION
-        GridPane shipsStatusDisplay = new GridPane();
-
+        VBox shipsStatusLayout = new VBox();
         Label shipsCaption = new Label(this.shipsOwner + "'s ships:");
-        shipsStatusDisplay.add(shipsCaption, 0, 0);
+        shipsStatusLayout.getChildren().add(shipsCaption);
+
+        GridPane shipsStatusDisplay = new GridPane();
+        shipsStatusDisplay.setVgap(5);
+        shipsStatusLayout.getChildren().add(shipsStatusDisplay);
 
         String[][] ships = {
                 {"Corvette", "2"},
@@ -37,14 +49,17 @@ public class ShipsStatusPanel implements BottomMenuElements {
         };
 
         for (int i = 0; i < ships.length; i++) {
-            Image shipImage = new Image(getClass().getResourceAsStream("/ships/" + ships[i][0] + ".png"), iconSize * Integer.parseInt(ships[i][1]), iconSize, true, true);
-            Button shipButton = new Button("", new ImageView(shipImage));
-            shipsStatusDisplay.add(shipButton, 0, i + 1);
-            shipButton.setTooltip(new Tooltip(ships[i][0]));
+//            Button shipButton = new Button("", new ImageView(shipImage));
+            shipsStatusDisplay.add(new Label(ships[i][0]), 0, i);
+            for (int j = 0; j < Integer.parseInt(ships[i][1]); j++) {
+                shipsStatusDisplay.add(new Rectangle(iconSize, iconSize, new ImagePattern(shipImage)), j + 2, i);
+            }
 
-            ProgressIndicator healthIndicator = new ProgressIndicator();
-            healthIndicator.setProgress(0.0);
-            shipsStatusDisplay.add(healthIndicator, 1, i + 1);
+//            shipButton.setTooltip(new Tooltip(ships[i][0]));
+
+//            ProgressIndicator healthIndicator = new ProgressIndicator();
+//            healthIndicator.setProgress(0.0);
+//            shipsStatusDisplay.add(healthIndicator, 1, i + 1);
         }
 
         shipsStatusDisplay.setAlignment(Pos.TOP_CENTER);
@@ -60,6 +75,6 @@ public class ShipsStatusPanel implements BottomMenuElements {
         );
         shipsStatusDisplay.setPadding(new Insets(0, 10, 0 ,10));
 
-        return shipsStatusDisplay;
+        return shipsStatusLayout;
     }
 }

@@ -14,9 +14,14 @@ import shipsinspace.view.gameBoardScene.interfaces.BottomMenuElements;
 
 public class AttackButtons implements BottomMenuElements {
     private String activeAttack;
+    private double iconSize;
+
+    public AttackButtons(double iconSize) {
+        this.iconSize = iconSize;
+    }
 
     @Override
-    public Region generateElement(double iconSize) {
+    public Region generateElement() {
         // ATTACK BUTTONS PANEL
         VBox attackButtonsPanel = new VBox();
 

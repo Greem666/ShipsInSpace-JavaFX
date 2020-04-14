@@ -1,6 +1,7 @@
 package shipsinspace.view.gameBoardScene.board;
 
 import javafx.scene.Node;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.layout.Region;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
@@ -10,7 +11,10 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import shipsinspace.common.EventListener;
+import shipsinspace.common.EventManager;
 import shipsinspace.controller.player.Player;
+import shipsinspace.controller.ships.ShipSegment;
 import shipsinspace.gameRegister.GameRegister;
 import shipsinspace.view.common.AlertWindow;
 import shipsinspace.common.Coordinates;
@@ -21,7 +25,11 @@ import shipsinspace.view.gameBoardScene.interfaces.WindowElements;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class Board implements WindowElements {
+public class Board {
+
+    private double boardWidth;
+    private double boardHeight;
+    private int tilesCount = 11;
 
     private Attack ACTIVE_ATTACK;
     private GridPane board;
@@ -30,16 +38,21 @@ public class Board implements WindowElements {
     private GameController backEndLogic;
 
     private Image shipPlayerImage = new Image(getClass().getResourceAsStream("/ships/shipSegmentPlayer.png"));
-    private Image shipComputerImage = new Image(getClass().getResourceAsStream("/ships/shipSegmentEnemy.png"));
+    private Image shipComputerImage = new Image(getClass().getResourceAsStream("/ships/shipSegmentEnemy2.png"));
+    private Image shipPlayerDamagedImage = new Image(getClass().getResourceAsStream("/ships/shipSegmentPlayerDamaged.png"));
+    private Image shipComputerDamagedImage = new Image(getClass().getResourceAsStream("/ships/shipSegmentEnemyDamaged.png"));
 
-    public Board(GameController gameController) {
+    private EventManager eventManager;
+
+    public Board(GameController gameController, double boardWidth, double boardHeight) {
+        this.boardWidth = boardWidth;
+        this.boardHeight = boardHeight;
         gameRegister = GameRegister.getInstance();
         this.backEndLogic = gameController;
         this.ACTIVE_ATTACK = this.backEndLogic.getActiveAttack();
     }
 
-    @Override
-    public Region generateElement(int boardWidth, int boardHeight, int tilesCount) {
+    public Region generateElement() {
 
         Image bkg = new Image(getClass().getResourceAsStream("/backgrounds/background_galaxy.jpg"));
 
@@ -76,7 +89,6 @@ public class Board implements WindowElements {
                 tile.setOnMouseClicked(e -> {
                     this.backEndLogic.gameTurn(tile.getCoordinates());
                     Player hitByPlayer = gameRegister.getOwnerOfHitObjectHitThisTurnByHumanPlayer();
-                    System.out.println(gameRegister.getCoordinatesHumanPlayerShotAtThisTurn());
                     if (hitByPlayer != null) {
                         //TODO: Animate HIT
                         markHit(gameRegister.getCoordinatesHumanPlayerShotAtThisTurn());
@@ -88,7 +100,6 @@ public class Board implements WindowElements {
 
                     Player hitByComputer = gameRegister.getOwnerOfHitObjectHitThisTurnByHumanPlayer();
                     Coordinates coordinatesAttackedByComputer = gameRegister.getCoordinatesComputerPlayerShotAtThisTurn();
-                    System.out.println(coordinatesAttackedByComputer);
                     if (hitByComputer != null) {
                         //TODO: Animate HIT
                         markHit(coordinatesAttackedByComputer);
@@ -98,17 +109,19 @@ public class Board implements WindowElements {
                         AlertWindow.display(this.ACTIVE_ATTACK.toString(), "Computer hit nothing at " + coordinatesAttackedByComputer);
                     }
 
+                    this.markPlayerShips(backEndLogic.getHumanPlayersFields(), new ImagePattern(shipPlayerImage), new ImagePattern(shipPlayerDamagedImage));
+                    this.markPlayerShips(backEndLogic.getComputerPlayersFields(), new ImagePattern(shipComputerImage), new ImagePattern(shipComputerDamagedImage));
+
                 });
 
                 // Highlighting tiles
                 if (y != 0 && x != 0) {
                     tile.setOnMouseEntered(t -> {
-                        tile.setFill(Color.rgb(210, 210, 210, 0.58));
+                        tile.setStroke(Color.RED);
                     });
                     tile.setOnMouseExited(t -> {
-                        tile.setFill(Color.TRANSPARENT);
-                        this.markPlayerShips(backEndLogic.getHumanPlayersFields(), new ImagePattern(shipPlayerImage));
-                        this.markPlayerShips(backEndLogic.getComputerPlayersFields(), new ImagePattern(shipComputerImage));
+//                        tile.setFill(Color.TRANSPARENT);
+                        tile.setStroke(Color.WHITE);
                     });
                 }
 
@@ -138,19 +151,23 @@ public class Board implements WindowElements {
 
         this.board = gameBoardLayout;
 
-        this.markPlayerShips(backEndLogic.getHumanPlayersFields(), new ImagePattern(shipPlayerImage));
-        this.markPlayerShips(backEndLogic.getComputerPlayersFields(), new ImagePattern(shipComputerImage));
+        this.markPlayerShips(backEndLogic.getHumanPlayersFields(), new ImagePattern(shipPlayerImage), new ImagePattern(shipPlayerDamagedImage));
+        this.markPlayerShips(backEndLogic.getComputerPlayersFields(), new ImagePattern(shipComputerImage), new ImagePattern(shipComputerDamagedImage));
 
         return this.board;
     }
 
-    public void markPlayerShips(List<Coordinates> playerOccupiedFields, Paint image) {
-        for (Coordinates coordinates: playerOccupiedFields) {
+    public void markPlayerShips(List<ShipSegment> playerOccupiedFields, Paint imageShipFunctional, Paint imageShipDestroyed) {
+        for (ShipSegment shipSegment: playerOccupiedFields) {
             for (Node node: this.board.getChildren()) {
                 if (!(node instanceof StackPane)) {
                     Tile tile = (Tile) node;
-                    if (tile.getCoordinates().equals(coordinates)) {
-                        tile.setFill(image);
+                    if (tile.getCoordinates().equals(shipSegment)) {
+                        if (shipSegment.isDestroyed()) {
+                            tile.setFill(imageShipDestroyed);
+                        } else {
+                            tile.setFill(imageShipFunctional);
+                        }
                     }
                 }
             }
@@ -159,9 +176,11 @@ public class Board implements WindowElements {
 
     public void markHit(Coordinates coordinates) {
         for (Node node: this.board.getChildren()) {
-            Tile tile = (Tile) node;
-            if (tile.getCoordinates().equals(coordinates)) {
-                tile.setFill(Color.RED);
+            if (!(node instanceof StackPane)) {
+                Tile tile = (Tile) node;
+                if (tile.getCoordinates().equals(coordinates)) {
+                    tile.setFill(Color.RED);
+                }
             }
         }
     }

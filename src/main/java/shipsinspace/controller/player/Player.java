@@ -1,6 +1,7 @@
 package shipsinspace.controller.player;
 
 import shipsinspace.common.Coordinates;
+import shipsinspace.controller.ships.ShipSegment;
 import shipsinspace.controller.ships.ShipTemplate;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class Player {
         this.ships = new ArrayList<>();
     }
 
-    public List<Coordinates> getFieldsOccupiedByShips() {
+    public List<ShipSegment> getFieldsOccupiedByShips() {
         return this.getShips().stream()
                 .flatMap(s -> s.getShipSegments().stream())
                 .collect(Collectors.toList());
@@ -54,9 +55,9 @@ public class Player {
 
     public boolean checkIfShipHit(Coordinates coordinates) {
         for (ShipTemplate ship: this.getShips()) {
-            for (Coordinates shipSegment: ship.getShipSegments()) {
+            for (ShipSegment shipSegment: ship.getShipSegments()) {
                 if (shipSegment.equals(coordinates)) {
-                    ship.removeShipSegment(coordinates);
+                    ship.destroyShipSegment(coordinates);
                     return true;
                 }
             }

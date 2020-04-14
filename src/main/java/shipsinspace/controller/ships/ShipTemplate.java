@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class ShipTemplate {
-    private List<Coordinates> shipSegments;
+    private List<ShipSegment> shipSegments;
     private String shipName;
     private Attack attackType;
     private int startingSegmentsCount;
@@ -20,27 +20,30 @@ public abstract class ShipTemplate {
         this.startingSegmentsCount = startingSegments;
     }
 
-    public List<Coordinates> getShipSegments() {
+    public List<ShipSegment> getShipSegments() {
         return shipSegments;
     }
 
-    public void setShipSegments(List<Coordinates> shipSegments) {
+    public void setShipSegments(List<ShipSegment> shipSegments) {
         this.shipSegments = shipSegments;
     }
 
-    public void addShipSegment(Coordinates newShipSegment) {
+    public void addShipSegment(ShipSegment newShipSegment) {
         if (!shipSegments.contains(newShipSegment)) {
             this.shipSegments.add(newShipSegment);
         } else {
             throw new IllegalArgumentException(String.format("Coordinate %s already in ship segments list.", newShipSegment.toString()));
         }
-
     }
 
-    public void removeShipSegment(Coordinates coordinates) {
-        this.shipSegments = this.shipSegments.stream()
-                .filter(e -> !e.equals(coordinates))
-                .collect(Collectors.toList());
+    public void destroyShipSegment(Coordinates coordinates) {
+        this.shipSegments.stream()
+                .forEach(s -> {
+                    if (s.equals(coordinates)) {
+                        s.setDestroyed(true);
+                    }
+                }
+                );
     }
 
     public Attack getAttackType() {

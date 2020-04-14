@@ -22,21 +22,6 @@ public class GameRegisterTestSuite {
     }
 
     @Test
-    public void testGameControllerReturn() {
-        // Given
-        GameRegister gameRegisterOne = GameRegister.getInstance();
-        GameRegister gameRegisterTwo = GameRegister.getInstance();
-        System.out.print("Game controller return from two separate instances of a GameRegister.");
-
-        // When
-        GameController firstGameController = gameRegisterOne.getGameController();
-        GameController secondGameController = gameRegisterTwo.getGameController();
-
-        // Then
-        Assert.assertEquals(firstGameController, secondGameController);
-    }
-
-    @Test
     public void testGameDifficultySettingAndReturn() {
         // Given
         GameRegister gameRegisterOne = GameRegister.getInstance();

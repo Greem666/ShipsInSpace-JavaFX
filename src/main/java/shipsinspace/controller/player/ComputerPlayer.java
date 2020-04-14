@@ -1,6 +1,7 @@
 package shipsinspace.controller.player;
 
 import shipsinspace.common.Coordinates;
+import shipsinspace.controller.ships.ShipSegment;
 import shipsinspace.controller.ships.ShipTemplate;
 
 import java.util.List;
@@ -20,21 +21,21 @@ public class ComputerPlayer extends Player {
         this.difficultySetting = difficultySetting;
     }
 
-    public Coordinates generateRandomCoordinates(List<Coordinates> fieldsToAvoid) {
-        Coordinates coordinates = generateRandomCoordinates();
+    public ShipSegment generateRandomCoordinates(List<ShipSegment> fieldsToAvoid) {
+        ShipSegment coordinates = generateRandomCoordinates();
         while(fieldsToAvoid.contains(coordinates)) {
             coordinates = generateRandomCoordinates();
         }
         return coordinates;
     }
 
-    public Coordinates generateRandomCoordinates() {
-        return new Coordinates(random.nextInt(10) + 1, random.nextInt(10) + 1);
+    public ShipSegment generateRandomCoordinates() {
+        return new ShipSegment(random.nextInt(10) + 1, random.nextInt(10) + 1);
     }
 
-    public Coordinates fireAtCoordinates(List<Coordinates> playerOccupiedCoordinates) {
+    public Coordinates fireAtCoordinates(List<ShipSegment> playerOccupiedCoordinates) {
         int hitOrMissProbability = random.nextInt(100);
-        List<Coordinates> ownOccupiedCoordinates = getFieldsOccupiedByShips();
+        List<ShipSegment> ownOccupiedCoordinates = getFieldsOccupiedByShips();
 
         Coordinates returnCoordinates = null;
 

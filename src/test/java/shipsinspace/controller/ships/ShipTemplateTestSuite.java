@@ -8,6 +8,7 @@ import shipsinspace.controller.ships.attackTypes.StandardAttack;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class TestShipType extends ShipTemplate {
     public TestShipType() {
@@ -40,13 +41,13 @@ public class ShipTemplateTestSuite {
         System.out.print("Testing test ship type creation...");
 
         // When
-        List<Coordinates> startingSegmentsList = testShip.getShipSegments();
+        List<ShipSegment> startingSegmentsList = testShip.getShipSegments();
         int startingSegmentsCount = testShip.getStartingSegmentsCount();
         Attack attackType = testShip.getAttackType();
         String shipName = testShip.getShipName();
 
         // Then
-        Assert.assertEquals(new ArrayList<Coordinates>(), startingSegmentsList);
+        Assert.assertEquals(new ArrayList<ShipSegment>(), startingSegmentsList);
         Assert.assertEquals(0, startingSegmentsList.size());
         Assert.assertEquals(4, startingSegmentsCount);
         Assert.assertEquals(new StandardAttack(), attackType);
@@ -60,9 +61,9 @@ public class ShipTemplateTestSuite {
         System.out.print("Testing adding new segment to test ship...");
 
         // When
-        Coordinates newShipSegment = new Coordinates(1, 1);
+        ShipSegment newShipSegment = new ShipSegment(1, 1);
         testShip.addShipSegment(newShipSegment);
-        List<Coordinates> shipSegmentsListAddedOne = testShip.getShipSegments();
+        List<ShipSegment> shipSegmentsListAddedOne = testShip.getShipSegments();
         List<Coordinates> expectedShipSegmentsListAddedOne = new ArrayList<Coordinates>(Arrays.asList(newShipSegment));
 
         // Then
@@ -76,14 +77,14 @@ public class ShipTemplateTestSuite {
         System.out.print("Testing setting new segments list to test ship...");
 
         // When
-        List<Coordinates> shipSegments = new ArrayList<>(
+        List<ShipSegment> shipSegments = new ArrayList<>(
                 Arrays.asList(
-                        new Coordinates(2, 2),
-                        new Coordinates(3, 3)
+                        new ShipSegment(2, 2),
+                        new ShipSegment(3, 3)
                 )
         );
         testShip.setShipSegments(shipSegments);
-        List<Coordinates> expectedShipSegmentsListReplacedAll = testShip.getShipSegments();
+        List<ShipSegment> expectedShipSegmentsListReplacedAll = testShip.getShipSegments();
 
         // Then
         Assert.assertEquals(expectedShipSegmentsListReplacedAll, shipSegments);
@@ -96,12 +97,31 @@ public class ShipTemplateTestSuite {
         System.out.print("Testing test ship type creation with repeated segments...");
 
         // When
-        Coordinates newShipSegment = new Coordinates(1, 1);
+        ShipSegment newShipSegment = new ShipSegment(1, 1);
         testShip.addShipSegment(newShipSegment);
         testShip.addShipSegment(newShipSegment);
 
         // Then
         // -
+    }
+
+    @Test
+    public void testShipTemplateDestroySegment() {
+        // Given
+        TestShipType testShip = new TestShipType();
+        System.out.print("Testing ship segment destruction method...");
+
+        // When
+        ShipSegment newShipSegment1 = new ShipSegment(1, 1);
+        testShip.addShipSegment(newShipSegment1);
+        boolean initialSegment1DestroyedState = newShipSegment1.isDestroyed();
+
+        Coordinates attackCoordinates = new Coordinates(1, 1);
+        testShip.destroyShipSegment(attackCoordinates);
+
+        // Then
+        Assert.assertFalse(initialSegment1DestroyedState);
+        Assert.assertTrue(newShipSegment1.isDestroyed());
     }
 
 

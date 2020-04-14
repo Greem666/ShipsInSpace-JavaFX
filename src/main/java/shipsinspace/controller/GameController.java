@@ -3,6 +3,7 @@ package shipsinspace.controller;
 import shipsinspace.common.Coordinates;
 import shipsinspace.controller.player.ComputerPlayer;
 import shipsinspace.controller.player.Player;
+import shipsinspace.controller.ships.ShipSegment;
 import shipsinspace.controller.ships.ShipTemplate;
 import shipsinspace.controller.ships.ShipsFactory;
 import shipsinspace.controller.ships.attackTypes.Attack;
@@ -91,7 +92,7 @@ public class GameController {
         player.setShips(ShipsFactory.createFleet());
     }
 
-    public void placeShips(Player player, List<Coordinates> occupiedFields) {
+    public void placeShips(Player player, List<ShipSegment> occupiedFields) {
         player.setShips(ShipsFactory.createFleet(occupiedFields));
     }
 
@@ -99,11 +100,11 @@ public class GameController {
         return player.getFieldsOccupiedByShips().size() > 0;
     }
 
-    public List<Coordinates> getHumanPlayersFields() {
+    public List<ShipSegment> getHumanPlayersFields() {
         return this.humanPlayer.getFieldsOccupiedByShips();
     }
 
-    public List<Coordinates> getComputerPlayersFields() {
+    public List<ShipSegment> getComputerPlayersFields() {
         return this.computerPlayer.getFieldsOccupiedByShips();
     }
 

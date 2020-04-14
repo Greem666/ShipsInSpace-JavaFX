@@ -8,15 +8,15 @@ public class Coordinates {
     private int xCoordinate;
     private int yCoordinate;
 
-    public Coordinates(@NamedArg("xCoordinate") int xCoordinate, @NamedArg("yCoordinate") int yCoordinate) {
+    public Coordinates(int xCoordinate, int yCoordinate) {
         this(xCoordinate, yCoordinate, 10, false);
     }
 
-    public Coordinates(@NamedArg("xCoordinate") int xCoordinate, @NamedArg("yCoordinate") int yCoordinate, @NamedArg("max") int max) {
+    public Coordinates(int xCoordinate, int yCoordinate, int max) {
         this(xCoordinate, yCoordinate, max, false);
     }
 
-    public Coordinates(@NamedArg("xCoordinate") int xCoordinate, @NamedArg("yCoordinate") int yCoordinate, @NamedArg("max") int max, @NamedArg("allowedZero") boolean allowedZero) {
+    public Coordinates(int xCoordinate, int yCoordinate, int max, boolean allowedZero) {
         if (allowedZero) {
             if ((xCoordinate >= 0 && yCoordinate >= 0) && (xCoordinate <= max && yCoordinate <= max)) {
                 this.xCoordinate = xCoordinate;
@@ -64,10 +64,14 @@ public class Coordinates {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Coordinates that = (Coordinates) o;
-        return xCoordinate == that.xCoordinate &&
-                yCoordinate == that.yCoordinate;
+//        if (o == null || getClass() != o.getClass()) return false;
+        if (o instanceof Coordinates) {
+            Coordinates that = (Coordinates) o;
+            return xCoordinate == that.xCoordinate &&
+                    yCoordinate == that.yCoordinate;
+        } else {
+            return false;
+        }
     }
 
     @Override
