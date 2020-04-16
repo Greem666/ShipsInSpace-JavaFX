@@ -1,10 +1,22 @@
-.gameOverText {
+.youWonOrLostText {
     -fx-font-family: Verdana;
-    -fx-font-size: 30;
+    -fx-font-size: 40;
     -fx-font-weight: bold;
     -fx-text-fill: #fdff6500;
     -fx-stroke: yellow;
     -fx-stroke-width: 1px;
+    -fx-spacing: 20px;
+    -fx-alignment: center;
+}
+
+.gameOverText {
+    -fx-font-family: Verdana;
+    -fx-font-size: 35;
+    -fx-font-weight: bold;
+    -fx-text-fill: #fdff6500;
+    -fx-stroke: yellow;
+    -fx-stroke-width: 1px;
+    -fx-alignment: center;
 }
 
 .gameOverButtons {

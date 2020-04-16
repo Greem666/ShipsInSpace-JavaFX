@@ -1,7 +1,10 @@
 package shipsinspace.registers;
 
 import javafx.scene.Scene;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import shipsinspace.controller.GameController;
 import shipsinspace.view.difficultySelectionScene.DifficultySelection;
 import shipsinspace.view.gameBoardScene.GameBoard;
@@ -17,8 +20,13 @@ public class ScenesRegister {
     private static ScenesRegister instance;
     private Scene gameOverScene, gameBoardScene, difficultySelectionScene, homeScreenScene;
     private Stage window;
+    private MediaPlayer backgroundMusicPlayer;
+    private MediaPlayer sfxPlayer;
 
     private ScenesRegister() {
+        Media sound = new Media(new File("src/main/resources/sounds/backgroundMusic/backgroundMusic.mp3").toURI().toString());
+        this.backgroundMusicPlayer = new MediaPlayer(sound);
+        this.sfxPlayer = new MediaPlayer(sound);
     }
 
     public static ScenesRegister getInstance() {
@@ -28,9 +36,30 @@ public class ScenesRegister {
         return instance;
     }
 
-//    public MediaPlayer getMediaPlayer() {
-//        return mediaPlayer;
-//    }
+    public void playBackgroundMusic() {
+        backgroundMusicPlayer.seek(Duration.ZERO);
+        backgroundMusicPlayer.play();
+        backgroundMusicPlayer.setVolume(0.5);
+        backgroundMusicPlayer.play();
+    }
+
+    public void playHumanPlayerShot() {
+        playSound("src/main/resources/sounds/effects/playerShot.mp3");
+    }
+
+    public void playComputerPlayerShot() {
+        playSound("src/main/resources/sounds/effects/computerShot.mp3");
+    }
+
+    public void playExplosionSound() {
+        playSound("src/main/resources/sounds/effects/explosion.mp3");
+    }
+
+    public void playSound(String soundPath) {
+        Media shotSound = new Media(new File(soundPath).toURI().toString());
+        this.sfxPlayer = new MediaPlayer(shotSound);
+        this.sfxPlayer.play();
+    }
 
     public void resetScenesRegister() {
         gameOverScene = gameBoardScene = difficultySelectionScene = homeScreenScene = null;

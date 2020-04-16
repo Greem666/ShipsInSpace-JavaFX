@@ -17,6 +17,7 @@ import shipsinspace.common.Coordinates;
 import shipsinspace.controller.GameController;
 import shipsinspace.controller.ships.attackTypes.Attack;
 import shipsinspace.registers.ScenesRegister;
+import shipsinspace.registers.SoundsRegister;
 import shipsinspace.view.GameWindow;
 import shipsinspace.view.difficultySelectionScene.DifficultySelection;
 import shipsinspace.view.gameOverScene.GameOver;
@@ -104,18 +105,18 @@ public class Board {
                     gameBoardLayout.add(fieldStack, row, col);
                 }
 
-
-                // FIELD SHOOTING MECHANIC
-                fieldStack.setOnMouseClicked(e -> {
-                    if (e.getButton() == MouseButton.PRIMARY) {
-                        carryOutGameTurn(fieldStack);
-                    } else if (e.getButton() == MouseButton.SECONDARY) {
-                        // For future, if different attacks get implemented
-                    }
-                });
-
-                // HIGHLIGHTING TILES
                 if (col != 0 && row != 0) {
+
+                    // FIELD SHOOTING MECHANIC
+                    fieldStack.setOnMouseClicked(e -> {
+                        if (e.getButton() == MouseButton.PRIMARY) {
+                            carryOutGameTurn(fieldStack);
+                        } else if (e.getButton() == MouseButton.SECONDARY) {
+                            // For future, if different attacks get implemented
+                        }
+                    });
+
+                    // HIGHLIGHTING TILES
                     fieldStack.setOnMouseEntered(t -> {
                         highlightActiveField(fieldStack);
                     });
@@ -197,6 +198,7 @@ public class Board {
     }
 
     public void carryOutHumanPlayerTurn(StackPane clickedField) {
+        SoundsRegister.getInstance().playHumanPlayerShot();
         this.backEndLogic.gameTurn(getTileFrom(clickedField).getCoordinates());
         Player playerHitByHumanPlayer = gameRegister.getOwnerOfHitObjectHitThisTurnByHumanPlayer();
         getEffectsFrom(clickedField).animateHumanPlayerExplosion();
@@ -208,6 +210,7 @@ public class Board {
 
     public void carryOutComputerPlayerTurn() {
 //        Player playerHitByComputerPlayer = gameRegister.getOwnerOfHitObjectHitThisTurnByHumanPlayer();
+        SoundsRegister.getInstance().playComputerPlayerShot();
         Player playerHitByComputerPlayer = gameRegister.getOwnerOfHitObjectHitThisTurnByComputerPlayer();
         Coordinates coordinatesAttackedByComputer = gameRegister.getCoordinatesComputerPlayerShotAtThisTurn();
         getEffectElementOnAttackedPanel(coordinatesAttackedByComputer).animateComputerPlayerExplosion();
@@ -227,6 +230,7 @@ public class Board {
 
     public void redrawShipsOfHitParty(Player playerHit) {
         if (playerHit != null) {
+            SoundsRegister.getInstance().playExplosionSound();
             if (playerHit.getName().equals("Computer")) {
                 drawComputerPlayerShips(backEndLogic.getComputerPlayersFields());
             } else {

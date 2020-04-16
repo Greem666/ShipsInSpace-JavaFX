@@ -9,6 +9,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import shipsinspace.registers.GameRegister;
 import shipsinspace.registers.ScenesRegister;
+import shipsinspace.registers.SoundsRegister;
 import shipsinspace.view.GameWindow;
 import shipsinspace.view.homeScreenScene.HomeScreen;
 
@@ -24,6 +25,8 @@ public class DifficultySelection {
         Scene nextScene = scenesRegister.getGameBoardScene();
 
         GameRegister gameRegister = GameRegister.getInstance();
+
+        SoundsRegister soundsRegister = SoundsRegister.getInstance();
 
         Image bkg = new Image(HomeScreen.class.getResourceAsStream("/backgrounds/background_galaxy_2.jpg"));
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, false, true);
@@ -43,16 +46,19 @@ public class DifficultySelection {
         // Difficulty buttons
         Button easyButton = new Button("Easy");
         easyButton.setOnAction(e -> {
+            soundsRegister.playButtonClickSound();
             gameRegister.setGameDifficulty(1);
             window.setScene(nextScene);
         });
         Button mediumButton = new Button("Medium");
         mediumButton.setOnAction(e -> {
+            soundsRegister.playButtonClickSound();
             gameRegister.setGameDifficulty(2);
             window.setScene(nextScene);
         });
         Button hardButton = new Button("Hard");
         hardButton.setOnAction(e -> {
+            soundsRegister.playButtonClickSound();
             gameRegister.setGameDifficulty(3);
             window.setScene(nextScene);
         });

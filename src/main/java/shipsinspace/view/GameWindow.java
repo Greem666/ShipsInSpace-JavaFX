@@ -2,20 +2,10 @@ package shipsinspace.view;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
-import shipsinspace.controller.GameController;
 import shipsinspace.registers.ScenesRegister;
+import shipsinspace.registers.SoundsRegister;
 import shipsinspace.view.common.ConfirmBox;
-import shipsinspace.view.difficultySelectionScene.DifficultySelection;
-import shipsinspace.view.gameBoardScene.GameBoard;
-import shipsinspace.view.gameOverScene.GameOver;
-import shipsinspace.view.homeScreenScene.HomeScreen;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-
-import java.io.File;
 
 public class GameWindow extends Application {
     // window
@@ -33,9 +23,7 @@ public class GameWindow extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        String path = getClass().getResource("/sounds/backgroundMusic/backgroundMusic.mp3").toString();
-        Media sound = new Media(new File(path).toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        SoundsRegister.getInstance().playBackgroundMusic();
 
         // window
         window = primaryStage;
