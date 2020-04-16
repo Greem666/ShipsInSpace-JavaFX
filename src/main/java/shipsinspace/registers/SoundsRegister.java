@@ -1,10 +1,8 @@
 package shipsinspace.registers;
 
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
-
-import java.io.File;
+//import javafx.scene.media.Media;
+//import javafx.scene.media.MediaPlayer;
+//import javafx.util.Duration;
 
 public class SoundsRegister {
     private static SoundsRegister instance;

@@ -1,20 +1,12 @@
 package shipsinspace.registers;
 
 import javafx.scene.Scene;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import shipsinspace.controller.GameController;
 import shipsinspace.view.difficultySelectionScene.DifficultySelection;
 import shipsinspace.view.gameBoardScene.GameBoard;
 import shipsinspace.view.gameOverScene.GameOver;
 import shipsinspace.view.homeScreenScene.HomeScreen;
-
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Path;
 
 public class ScenesRegister {
     private static ScenesRegister instance;
