@@ -27,6 +27,8 @@ public class HomeScreen {
         ScenesRegister scenesRegister = ScenesRegister.getInstance();
         Scene nextScene = scenesRegister.getDifficultySelectionScene();
 
+//        scenesRegister.getMediaPlayer().play();
+
         Image bkg = new Image(HomeScreen.class.getResourceAsStream("/backgrounds/background_stars.jpg"));
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, false, true);
         BackgroundImage backgroundImage = new BackgroundImage(bkg, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);

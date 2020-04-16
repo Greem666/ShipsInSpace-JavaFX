@@ -8,6 +8,11 @@ import shipsinspace.view.gameBoardScene.GameBoard;
 import shipsinspace.view.gameOverScene.GameOver;
 import shipsinspace.view.homeScreenScene.HomeScreen;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Path;
+
 public class ScenesRegister {
     private static ScenesRegister instance;
     private Scene gameOverScene, gameBoardScene, difficultySelectionScene, homeScreenScene;
@@ -22,6 +27,10 @@ public class ScenesRegister {
         }
         return instance;
     }
+
+//    public MediaPlayer getMediaPlayer() {
+//        return mediaPlayer;
+//    }
 
     public void resetScenesRegister() {
         gameOverScene = gameBoardScene = difficultySelectionScene = homeScreenScene = null;
