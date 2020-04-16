@@ -12,7 +12,6 @@ import shipsinspace.registers.ScenesRegister;
 import shipsinspace.registers.SoundsRegister;
 import shipsinspace.view.GameWindow;
 import shipsinspace.view.difficultySelectionScene.DifficultySelection;
-import shipsinspace.view.homeScreenScene.HomeScreen;
 
 import java.util.stream.Stream;
 
