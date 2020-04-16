@@ -30,7 +30,7 @@ public class ShipsFactoryTestSuite {
     @Test
     public void testCreateFleetNoRepeatedSegmentsNoOccupiedFields() {
         // Given
-        List<ShipTemplate> fleet = ShipsFactory.createFleet(new ArrayList<Coordinates>());
+        List<ShipTemplate> fleet = ShipsFactory.createFleet(new ArrayList<ShipSegment>());
         System.out.print("Fleet creation with no previously occupied fields...");
 
         // When
@@ -51,7 +51,7 @@ public class ShipsFactoryTestSuite {
     @Test
     public void testCreateFleetNoRepeatedSegmentsSomeOccupiedFields() {
         // Given
-        List<Coordinates> occupiedFields = ShipsFactory.createFleet(new ArrayList<Coordinates>()).stream()
+        List<ShipSegment> occupiedFields = ShipsFactory.createFleet(new ArrayList<ShipSegment>()).stream()
                 .flatMap(s -> s.getShipSegments().stream())
                 .collect(Collectors.toList());
         int previouslyOccupiedFields = occupiedFields.size();
@@ -62,7 +62,7 @@ public class ShipsFactoryTestSuite {
 
 
         // When
-        List<Coordinates> allShipSegments = currentFleet.stream()
+        List<ShipSegment> allShipSegments = currentFleet.stream()
                 .flatMap(s -> s.getShipSegments().stream())
                 .collect(Collectors.toList());
         int currentlyOccupiedFields = allShipSegments.size();
@@ -77,7 +77,7 @@ public class ShipsFactoryTestSuite {
     @Test
     public void testCreateFleetProperFleetSize() {
         // Given
-        List<ShipTemplate> fleet = ShipsFactory.createFleet(new ArrayList<Coordinates>());
+        List<ShipTemplate> fleet = ShipsFactory.createFleet(new ArrayList<ShipSegment>());
         System.out.print("Fleet creation - proper output size...");
 
         // When
@@ -85,5 +85,41 @@ public class ShipsFactoryTestSuite {
 
         // Then
         Assert.assertEquals(5, fleetSize);
+    }
+
+    @Test
+    public void testCreateFleetNotVisible() {
+        // Given
+        List<ShipTemplate> fleet = ShipsFactory.createFleet(new ArrayList<ShipSegment>());
+        System.out.print("Fleet creation - not visible setting...");
+
+        // When
+        long visibleSegments = fleet.stream()
+                .flatMap(s -> s.getShipSegments().stream())
+                .filter(ShipSegment::isVisible)
+                .count();
+
+        // Then
+        Assert.assertEquals(0, visibleSegments);
+    }
+
+    @Test
+    public void testCreateFleetVisible() {
+        // Given
+        List<ShipTemplate> fleet = ShipsFactory.createFleet(new ArrayList<ShipSegment>(), true);
+        System.out.print("Fleet creation - not visible setting...");
+
+        // When
+        long visibleSegments = fleet.stream()
+                .flatMap(s -> s.getShipSegments().stream())
+                .filter(ShipSegment::isVisible)
+                .count();
+
+        long allSegments = fleet.stream()
+                .mapToLong(s -> s.getShipSegments().size())
+                .sum();
+
+        // Then
+        Assert.assertEquals(allSegments, visibleSegments);
     }
 }

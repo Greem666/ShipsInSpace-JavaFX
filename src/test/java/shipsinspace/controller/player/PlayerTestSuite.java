@@ -2,6 +2,7 @@ package shipsinspace.controller.player;
 
 import org.junit.*;
 import shipsinspace.common.Coordinates;
+import shipsinspace.controller.ships.ShipSegment;
 import shipsinspace.controller.ships.ShipTemplate;
 import shipsinspace.controller.ships.ShipsFactory;
 
@@ -120,7 +121,7 @@ public class PlayerTestSuite {
         System.out.print("Player object creation with no fleet input...");
 
         // When
-        List<Coordinates> playerOccupiedFields = player.getFieldsOccupiedByShips();
+        List<ShipSegment> playerOccupiedFields = player.getFieldsOccupiedByShips();
 
         // Then
         Assert.assertEquals(fieldsOccupiedByFleet, playerOccupiedFields);

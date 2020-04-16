@@ -1,9 +1,9 @@
-package shipsinspace.gameRegister;
+package shipsinspace.registers;
 
 import shipsinspace.common.Coordinates;
-import shipsinspace.controller.GameController;
 import shipsinspace.controller.player.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +15,7 @@ public final class GameRegister {
 
 //    private GameController gameController;
 
-    private int gameDifficulty;
+    private Integer gameDifficulty = 1;
 
     private String humanPlayerName;
 
@@ -28,7 +28,7 @@ public final class GameRegister {
     private Player ownerOfHitObjectHitThisTurnByHumanPlayer = null;
     private Player ownerOfHitObjectHitThisTurnByComputerPlayer = null;
 
-    private String gameStatus;
+    private String gameStatus = "game_on";
 
     private GameRegister() {
 //        this.gameController = gameController;
@@ -44,6 +44,22 @@ public final class GameRegister {
 //    public GameController getGameController() {
 //        return gameController;
 //    }
+
+    public void resetGameInfo() {
+
+        humanPlayerName = null;
+
+        humanShipList = new ArrayList<>();
+        computerShipList = new ArrayList<>();
+
+        coordinatesHumanPlayerShotAtThisTurn = null;
+        coordinatesComputerPlayerShotAtThisTurn = null;
+
+        ownerOfHitObjectHitThisTurnByHumanPlayer = null;
+        ownerOfHitObjectHitThisTurnByComputerPlayer = null;
+
+        gameStatus = "game_on";
+    }
 
     public String getHumanPlayerName() {
         return humanPlayerName;

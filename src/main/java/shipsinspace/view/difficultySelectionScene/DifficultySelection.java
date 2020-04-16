@@ -3,12 +3,12 @@ package shipsinspace.view.difficultySelectionScene;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import shipsinspace.gameRegister.GameRegister;
+import shipsinspace.registers.GameRegister;
+import shipsinspace.registers.ScenesRegister;
 import shipsinspace.view.GameWindow;
 import shipsinspace.view.homeScreenScene.HomeScreen;
 
@@ -16,9 +16,13 @@ import java.util.stream.Stream;
 
 public class DifficultySelection {
 
-    public static Scene display(Scene nextScene) {
+    public Scene display() {
 
         Stage window = GameWindow.getPrimaryStage();
+
+        ScenesRegister scenesRegister = ScenesRegister.getInstance();
+        Scene nextScene = scenesRegister.getGameBoardScene();
+
         GameRegister gameRegister = GameRegister.getInstance();
 
         Image bkg = new Image(HomeScreen.class.getResourceAsStream("/backgrounds/background_galaxy_2.jpg"));

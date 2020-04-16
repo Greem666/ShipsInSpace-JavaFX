@@ -1,28 +1,28 @@
 package shipsinspace.view.gameBoardScene.board;
 
 import javafx.scene.Node;
-import javafx.scene.effect.BlendMode;
+import javafx.scene.Scene;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Region;
-import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.paint.Paint;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import shipsinspace.common.EventListener;
+import javafx.stage.Stage;
 import shipsinspace.common.EventManager;
 import shipsinspace.controller.player.Player;
 import shipsinspace.controller.ships.ShipSegment;
-import shipsinspace.gameRegister.GameRegister;
-import shipsinspace.view.common.AlertWindow;
+import shipsinspace.registers.GameRegister;
 import shipsinspace.common.Coordinates;
 import shipsinspace.controller.GameController;
 import shipsinspace.controller.ships.attackTypes.Attack;
-import shipsinspace.view.gameBoardScene.interfaces.WindowElements;
+import shipsinspace.registers.ScenesRegister;
+import shipsinspace.view.GameWindow;
+import shipsinspace.view.difficultySelectionScene.DifficultySelection;
+import shipsinspace.view.gameOverScene.GameOver;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Board {
@@ -60,10 +60,8 @@ public class Board {
         char[] LETTERS = "abcdefghijklmnopqrstuvwxyz".toCharArray();
         int[] NUMBERS = IntStream.range(1, LETTERS.length).toArray();
 
-        double gameBoardHeight = boardHeight;
-        double gameBoardWidth = boardWidth;
         double tileBorderThickness = 1;
-        double TILE_SIZE = ((double)boardWidth) / tilesCount - 2 * tileBorderThickness;
+        double TILE_SIZE = boardWidth / tilesCount - 2 * tileBorderThickness;
 
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, false, true);
         BackgroundImage backgroundImage = new BackgroundImage(bkg, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
@@ -71,102 +69,99 @@ public class Board {
 
         // GAME BOARD
         GridPane gameBoardLayout = new GridPane();
-
-        gameBoardLayout.setMaxHeight(gameBoardHeight);
-        gameBoardLayout.setMaxWidth(gameBoardWidth);
+        gameBoardLayout.setId("grid");
         gameBoardLayout.setBackground(background);
-        gameBoardLayout.setAlignment(Pos.CENTER);
 
-        for (int y = 0; y < tilesCount; y++) {
-            for (int x = 0; x < tilesCount; x++) {
+        for (int col = 0; col < tilesCount; col++) {
+            for (int row = 0; row < tilesCount; row++) {
 
-                Tile tile = new Tile(TILE_SIZE, TILE_SIZE, new Coordinates(x, y, 11, true));
-                tile.setFill(Color.TRANSPARENT);
-                tile.setStroke(Color.WHITE);
-                tile.setStrokeWidth(tileBorderThickness);
-//                tile.setFill(new ImagePattern(shipPlayerImage));
+                Tile tile = new Tile(TILE_SIZE, TILE_SIZE, new Coordinates(row, col, 11, true));
+                tile.getStyleClass().add("tiles");
 
-                tile.setOnMouseClicked(e -> {
-                    this.backEndLogic.gameTurn(tile.getCoordinates());
-                    Player hitByPlayer = gameRegister.getOwnerOfHitObjectHitThisTurnByHumanPlayer();
-                    if (hitByPlayer != null) {
-                        //TODO: Animate HIT
-                        markHit(gameRegister.getCoordinatesHumanPlayerShotAtThisTurn());
-                        AlertWindow.display(this.ACTIVE_ATTACK.toString(), "Something was hit at " + tile.getCoordinates());
-                    } else {
-                        //TODO: Animate miss
-                        AlertWindow.display(this.ACTIVE_ATTACK.toString(), "Nothing was hit at " + tile.getCoordinates());
+                StackPane fieldStack = new StackPane();
+                fieldStack.getChildren().add(tile);
+
+                // PERSONALIZATION OF TILES & ADDING OF TEXT or EFFECTS/SHIPVIEW
+                if (row == 0 || col ==0) {
+                    Text text = new Text();
+                    text.getStyleClass().add("boardMarkings");
+
+                    fieldStack.getChildren().add(text);
+                    gameBoardLayout.add(fieldStack, row, col);
+
+                    tile.getStyleClass().add("boardMarkingTiles");
+
+                    if (row > 0) {
+                        text.setText(String.valueOf(NUMBERS[row - 1]));
+                    } else if (col > 0) {
+                        text.setText(String.valueOf(LETTERS[col - 1]).toUpperCase());
                     }
+                } else {
+                    ShipView shipView = new ShipView(TILE_SIZE);
+                    Effects effects = new Effects(TILE_SIZE);
 
-                    Player hitByComputer = gameRegister.getOwnerOfHitObjectHitThisTurnByHumanPlayer();
-                    Coordinates coordinatesAttackedByComputer = gameRegister.getCoordinatesComputerPlayerShotAtThisTurn();
-                    if (hitByComputer != null) {
-                        //TODO: Animate HIT
-                        markHit(coordinatesAttackedByComputer);
-                        AlertWindow.display(this.ACTIVE_ATTACK.toString(), "Computer hit something at " + coordinatesAttackedByComputer);
-                    } else {
-                        //TODO: Animate miss
-                        AlertWindow.display(this.ACTIVE_ATTACK.toString(), "Computer hit nothing at " + coordinatesAttackedByComputer);
+                    fieldStack.getChildren().addAll(shipView, effects);
+                    gameBoardLayout.add(fieldStack, row, col);
+                }
+
+
+                // FIELD SHOOTING MECHANIC
+                fieldStack.setOnMouseClicked(e -> {
+                    if (e.getButton() == MouseButton.PRIMARY) {
+                        carryOutGameTurn(fieldStack);
+                    } else if (e.getButton() == MouseButton.SECONDARY) {
+                        // For future, if different attacks get implemented
                     }
-
-                    this.markPlayerShips(backEndLogic.getHumanPlayersFields(), new ImagePattern(shipPlayerImage), new ImagePattern(shipPlayerDamagedImage));
-                    this.markPlayerShips(backEndLogic.getComputerPlayersFields(), new ImagePattern(shipComputerImage), new ImagePattern(shipComputerDamagedImage));
-
                 });
 
-                // Highlighting tiles
-                if (y != 0 && x != 0) {
-                    tile.setOnMouseEntered(t -> {
-                        tile.setStroke(Color.RED);
+                // HIGHLIGHTING TILES
+                if (col != 0 && row != 0) {
+                    fieldStack.setOnMouseEntered(t -> {
+                        highlightActiveField(fieldStack);
                     });
-                    tile.setOnMouseExited(t -> {
-//                        tile.setFill(Color.TRANSPARENT);
-                        tile.setStroke(Color.WHITE);
+
+                    fieldStack.setOnMouseExited(t -> {
+                      unhighlightActiveField(fieldStack);
                     });
                 }
-
-                if (y == 0 && x > 0) {
-                    tile.setFill(Color.rgb(0, 0, 0, 0.5));
-                    Text text = new Text(String.valueOf(NUMBERS[x - 1]));
-                    text.setFont(Font.font(40));
-                    text.setFill(Color.WHITE);
-                    text.setStrokeWidth(1);
-                    text.setStroke(Color.BLACK);
-                    gameBoardLayout.add(new StackPane(tile, text), x, y);
-                }
-
-                if (x == 0 && y > 0) {
-                    tile.setFill(Color.rgb(0, 0, 0, 0.5));
-//                    Text text = new Text(String.valueOf(LETTERS[y - 1]).toUpperCase());
-                    Text text = new Text(String.valueOf(NUMBERS[y - 1]));
-                    text.setFont(Font.font(40));
-                    text.setFill(Color.WHITE);
-                    text.setStrokeWidth(1);
-                    text.setStroke(Color.BLACK);
-                    gameBoardLayout.add(new StackPane(tile, text), x, y);
-                }
-                gameBoardLayout.add(tile, x, y);
             }
         }
 
+        gameBoardLayout.getStylesheets().add(DifficultySelection.class.getResource("/css/gameBoardScene.css").toExternalForm());
+
         this.board = gameBoardLayout;
 
-        this.markPlayerShips(backEndLogic.getHumanPlayersFields(), new ImagePattern(shipPlayerImage), new ImagePattern(shipPlayerDamagedImage));
-        this.markPlayerShips(backEndLogic.getComputerPlayersFields(), new ImagePattern(shipComputerImage), new ImagePattern(shipComputerDamagedImage));
+        this.drawPlayerShips(backEndLogic.getHumanPlayersFields(), shipPlayerImage, shipPlayerDamagedImage);
+        this.drawPlayerShips(backEndLogic.getComputerPlayersFields(), shipComputerImage, shipComputerDamagedImage);
 
         return this.board;
     }
 
-    public void markPlayerShips(List<ShipSegment> playerOccupiedFields, Paint imageShipFunctional, Paint imageShipDestroyed) {
+    public void drawHumanPlayerShips(List<ShipSegment> playerOccupiedFields) {
+        drawPlayerShips(playerOccupiedFields, shipPlayerImage, shipPlayerDamagedImage);
+    }
+
+    public void drawComputerPlayerShips(List<ShipSegment> playerOccupiedFields) {
+        drawPlayerShips(playerOccupiedFields, shipComputerImage, shipComputerDamagedImage);
+    }
+
+    public void drawPlayerShips(List<ShipSegment> playerOccupiedFields, Image imageShipFunctional, Image imageShipDestroyed) {
         for (ShipSegment shipSegment: playerOccupiedFields) {
             for (Node node: this.board.getChildren()) {
-                if (!(node instanceof StackPane)) {
-                    Tile tile = (Tile) node;
-                    if (tile.getCoordinates().equals(shipSegment)) {
-                        if (shipSegment.isDestroyed()) {
-                            tile.setFill(imageShipDestroyed);
-                        } else {
-                            tile.setFill(imageShipFunctional);
+                StackPane stackPane = (StackPane) node;
+                for (Node tileCandidate: stackPane.getChildren()) {
+                    if (tileCandidate instanceof Tile) {
+                        Tile tile = (Tile) tileCandidate;
+                        if (tile.getCoordinates().equals(shipSegment)) {
+                            ShipView shipView = (ShipView) stackPane.getChildren().get(1);
+                            if (shipSegment.isVisible()) {
+                                if (shipSegment.isDestroyed()) {
+                                    shipView.setImage(imageShipDestroyed);
+                                    shipView.startDamagedAnimation();
+                                } else {
+                                    shipView.setImage(imageShipFunctional);
+                                }
+                            }
                         }
                     }
                 }
@@ -183,5 +178,92 @@ public class Board {
                 }
             }
         }
+    }
+
+    public Effects getEffectElementOnAttackedPanel(Coordinates coordinates) {
+        return (Effects) this.board.getChildren().stream()
+                .map(e -> ((StackPane)e).getChildren())
+                .filter(e -> ((Tile)e.get(0)).getCoordinates().equals(coordinates))
+                .map(e -> e.get(2))
+                .collect(Collectors.toList()).get(0);
+    }
+
+    public void carryOutGameTurn(StackPane clickedField) {
+        carryOutHumanPlayerTurn(clickedField);
+        checkGameStatus();
+
+        carryOutComputerPlayerTurn();
+        checkGameStatus();
+    }
+
+    public void carryOutHumanPlayerTurn(StackPane clickedField) {
+        this.backEndLogic.gameTurn(getTileFrom(clickedField).getCoordinates());
+        Player playerHitByHumanPlayer = gameRegister.getOwnerOfHitObjectHitThisTurnByHumanPlayer();
+        getEffectsFrom(clickedField).animateHumanPlayerExplosion();
+//                    this.markPlayerShips(backEndLogic.getHumanPlayersFields(), shipPlayerImage, shipPlayerDamagedImage);
+//                    this.markPlayerShips(backEndLogic.getComputerPlayersFields(), shipComputerImage, shipComputerDamagedImage);
+
+        redrawShipsOfHitParty(playerHitByHumanPlayer);
+    }
+
+    public void carryOutComputerPlayerTurn() {
+//        Player playerHitByComputerPlayer = gameRegister.getOwnerOfHitObjectHitThisTurnByHumanPlayer();
+        Player playerHitByComputerPlayer = gameRegister.getOwnerOfHitObjectHitThisTurnByComputerPlayer();
+        Coordinates coordinatesAttackedByComputer = gameRegister.getCoordinatesComputerPlayerShotAtThisTurn();
+        getEffectElementOnAttackedPanel(coordinatesAttackedByComputer).animateComputerPlayerExplosion();
+
+        redrawShipsOfHitParty(playerHitByComputerPlayer);
+    }
+
+    public void checkGameStatus() {
+        if (gameRegister.getGameStatus().equals("human_lost") || gameRegister.getGameStatus().equals("computer_lost")) {
+            //TODO: Singleton to receive information about player who lost all ships
+            //TODO: Some game end animation, before scene switch
+            Stage window = ScenesRegister.getInstance().getWindow();
+            Scene gameOverScene = ScenesRegister.getInstance().getGameOverScene();
+            window.setScene(gameOverScene);
+        }
+    }
+
+    public void redrawShipsOfHitParty(Player playerHit) {
+        if (playerHit != null) {
+            if (playerHit.getName().equals("Computer")) {
+                drawComputerPlayerShips(backEndLogic.getComputerPlayersFields());
+            } else {
+                drawHumanPlayerShips(backEndLogic.getHumanPlayersFields());
+            }
+            //TODO: Check if any ships left in game
+        } else {
+            //TODO: Animate miss
+        }
+    }
+
+    private void highlightActiveField(StackPane activeField) {
+        getTileFrom(activeField).setStroke(Color.RED);
+        getShipViewFrom(activeField).startRotatingShip();
+
+    }
+
+    private void unhighlightActiveField(StackPane activeField) {
+        getTileFrom(activeField).setStroke(Color.WHITE);
+        getShipViewFrom(activeField).stopRotatingShip();
+    }
+
+    private Tile getTileFrom(StackPane stackPane) {
+        return (Tile) stackPane.getChildren().stream()
+                .filter(node -> node instanceof Tile)
+                .collect(Collectors.toList()).get(0);
+    }
+
+    private ShipView getShipViewFrom(StackPane stackPane) {
+        return (ShipView) stackPane.getChildren().stream()
+                .filter(node -> node instanceof ShipView)
+                .collect(Collectors.toList()).get(0);
+    }
+
+    private Effects getEffectsFrom(StackPane stackPane) {
+        return (Effects) stackPane.getChildren().stream()
+                .filter(node -> node instanceof Effects)
+                .collect(Collectors.toList()).get(0);
     }
 }

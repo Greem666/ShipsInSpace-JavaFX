@@ -41,6 +41,7 @@ public abstract class ShipTemplate {
                 .forEach(s -> {
                     if (s.equals(coordinates)) {
                         s.setDestroyed(true);
+                        s.setVisible(true);
                     }
                 }
                 );
@@ -56,5 +57,10 @@ public abstract class ShipTemplate {
 
     public int getStartingSegmentsCount() {
         return startingSegmentsCount;
+    }
+
+    public boolean isDestroyed() {
+        return this.shipSegments.stream()
+                .allMatch(ShipSegment::isDestroyed);
     }
 }

@@ -9,10 +9,18 @@ public class ShipsFactory {
     private static Random random = new Random();
 
     public static List<ShipTemplate> createFleet() {
-        return createFleet(new ArrayList<>());
+        return createFleet(new ArrayList<>(), false);
+    }
+
+    public static List<ShipTemplate> createFleet(boolean createVisible) {
+        return createFleet(new ArrayList<>(), createVisible);
     }
 
     public static List<ShipTemplate> createFleet(List<ShipSegment> occupiedFields) {
+        return createFleet(occupiedFields, false);
+    }
+
+    public static List<ShipTemplate> createFleet(List<ShipSegment> occupiedFields, boolean createVisible) {
         List<ShipTemplate> shipTemplates = new ArrayList<>(
                 Arrays.asList(
                     new Battleship(),
@@ -32,6 +40,7 @@ public class ShipsFactory {
             while (currentSegmentsCount < desiredSegmentsCount) {
 
                 ShipSegment randomStartingPoint = generateRandomStartingPoint(1, 10);
+                randomStartingPoint.setVisible(createVisible);
                 if (areDirectNeighboursOccupied(randomStartingPoint, occupiedFields)) {
                     shipType.addShipSegment(randomStartingPoint);
 
@@ -42,7 +51,9 @@ public class ShipsFactory {
                         Coordinates newShipSegmentCoordinates = randomStartingPoint.returnNeighbour(chosenAxis, chosenDirection);
                         if (areDirectNeighboursOccupied(newShipSegmentCoordinates, occupiedFields)) {
                             try {
-                                shipType.addShipSegment(new ShipSegment(newShipSegmentCoordinates.getX(), newShipSegmentCoordinates.getY()));
+                                ShipSegment newShipSegment = new ShipSegment(newShipSegmentCoordinates.getX(), newShipSegmentCoordinates.getY());
+                                newShipSegment.setVisible(createVisible);
+                                shipType.addShipSegment(newShipSegment);
                             } catch (IllegalArgumentException e) {
                                 shipType.setShipSegments(new ArrayList<ShipSegment>());
                                 break;

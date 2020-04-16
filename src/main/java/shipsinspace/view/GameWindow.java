@@ -4,17 +4,17 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import shipsinspace.controller.GameController;
+import shipsinspace.registers.ScenesRegister;
 import shipsinspace.view.common.ConfirmBox;
 import shipsinspace.view.difficultySelectionScene.DifficultySelection;
 import shipsinspace.view.gameBoardScene.GameBoard;
+import shipsinspace.view.gameOverScene.GameOver;
 import shipsinspace.view.homeScreenScene.HomeScreen;
 
 public class GameWindow extends Application {
     // window
     private static Stage window;
-
-    private Scene gameScene, difficultySelectionScene, homeScreenScene;
-
+    private ScenesRegister scenesRegister = ScenesRegister.getInstance();
 
     public static Stage getPrimaryStage() {
         return window;
@@ -32,20 +32,18 @@ public class GameWindow extends Application {
         window.setTitle("Ships... but in space!");
         window.setResizable(false);
 
-        gameScene = new GameBoard(new GameController()).display();
-        difficultySelectionScene = new DifficultySelection().display(gameScene);
-        homeScreenScene = new HomeScreen().display(difficultySelectionScene);
+        scenesRegister.setWindow(window);
+
+        Scene nextScene = scenesRegister.getHomeScreenScene();
 
         window.setOnCloseRequest(e -> {
             e.consume();
             closeProgram();
         });
 
-        // DIFFICULTY SELECTION
-
         // START WINDOW
 
-        window.setScene(homeScreenScene);
+        window.setScene(nextScene);
         window.show();
 
     }

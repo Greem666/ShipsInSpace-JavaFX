@@ -7,7 +7,8 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import shipsinspace.gameRegister.GameRegister;
+import shipsinspace.registers.GameRegister;
+import shipsinspace.registers.ScenesRegister;
 import shipsinspace.view.GameWindow;
 import shipsinspace.view.difficultySelectionScene.DifficultySelection;
 import shipsinspace.view.homeScreenScene.HomeScreen;
@@ -16,10 +17,10 @@ import java.util.stream.Stream;
 
 public class GameOver {
 
-    public static Scene display(Scene nextScene) {
+    public Scene display() {
 
         Stage window = GameWindow.getPrimaryStage();
-        GameRegister gameRegister = GameRegister.getInstance();
+        ScenesRegister scenesRegister = ScenesRegister.getInstance();
 
         Image bkg = new Image(HomeScreen.class.getResourceAsStream("/backgrounds/background_stars.jpg"));
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, false, true);
@@ -36,11 +37,15 @@ public class GameOver {
         Text gameOverText = new Text("Would you like to play again?");
         gameOverText.getStyleClass().add("gameOverText");
 
-        // Difficulty buttons
+        // Play again button
         Button playAgainButton = new Button("Play again");
         playAgainButton.setOnAction(e -> {
+            scenesRegister.resetScenesRegister();
+            Scene nextScene = scenesRegister.getHomeScreenScene();
             window.setScene(nextScene);
         });
+
+        // Quit button
         Button quitButton = new Button("Quit");
         quitButton.setOnAction(e -> {
             window.close();

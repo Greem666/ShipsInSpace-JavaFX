@@ -12,8 +12,8 @@
 #pressAnyKeyText {
     -fx-font-family: Verdana;
     -fx-font-size: 25;
-    -fx-text-fill: #fff0;
-    -fx-stroke-color: #fff0;
+    -fx-fill: rgba(255, 255, 255, 0.6);
+    -fx-stroke-color: #000000;
     -fx-stroke-width: 0px;
     -fx-text-alignment: center;
 }

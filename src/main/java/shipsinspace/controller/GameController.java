@@ -8,7 +8,7 @@ import shipsinspace.controller.ships.ShipTemplate;
 import shipsinspace.controller.ships.ShipsFactory;
 import shipsinspace.controller.ships.attackTypes.Attack;
 import shipsinspace.controller.ships.attackTypes.StandardAttack;
-import shipsinspace.gameRegister.GameRegister;
+import shipsinspace.registers.GameRegister;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,22 +31,35 @@ public class GameController {
         this.activeAttack = new StandardAttack();
     }
 
+    public void gameStatusReset() {
+        gameRegister.resetGameInfo();
+
+        generateHumanPlayer();
+        generateComputerPlayer(this.gameRegister.getGameDifficulty());
+
+        this.activeAttack = new StandardAttack();
+    }
+
     public void gameTurn(Coordinates coordinatesHumanPlayerShotAt) {
         Player ownerOfHitObject = humanFireAtCoordinates(coordinatesHumanPlayerShotAt);
         gameRegister.setCoordinatesHumanPlayerShotAtThisTurn(coordinatesHumanPlayerShotAt);
         gameRegister.setObjectHumanPlayerHitThisTurn(ownerOfHitObject);
         gameRegister.setHumanShipList(
                 this.humanPlayer.getShips().stream()
+                        .filter(ship -> !ship.isDestroyed())
                         .map(ShipTemplate::getShipName)
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList())
+        );
 
         Player computerHitSomething = computerMove();
         // gameRegister.setCoordinatesComputerPlayerShotAtThisTurn();   is set in computerMove() method
         gameRegister.setObjectComputerPlayerHitThisTurn(computerHitSomething);
         gameRegister.setComputerShipList(
                 this.computerPlayer.getShips().stream()
+                        .filter(ship -> !ship.isDestroyed())
                         .map(ShipTemplate::getShipName)
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList())
+        );
 
         if (gameRegister.getHumanShipList().size() == 0) {
             gameRegister.setGameStatus("human_lost");
@@ -80,20 +93,20 @@ public class GameController {
 
     public void generateHumanPlayer() {
         this.humanPlayer = new Player("Human");
-        this.placeShips(this.humanPlayer);
+        this.placeShips(this.humanPlayer, true);
     }
 
     public void generateComputerPlayer(int gameDifficulty) {
         this.computerPlayer = new ComputerPlayer(gameDifficulty);
-        this.placeShips(this.computerPlayer, this.humanPlayer.getFieldsOccupiedByShips());
+        this.placeShips(this.computerPlayer, this.humanPlayer.getFieldsOccupiedByShips(), false);
     }
 
-    public void placeShips(Player player) {
-        player.setShips(ShipsFactory.createFleet());
+    public void placeShips(Player player, boolean createVisible) {
+        player.setShips(ShipsFactory.createFleet(createVisible));
     }
 
-    public void placeShips(Player player, List<ShipSegment> occupiedFields) {
-        player.setShips(ShipsFactory.createFleet(occupiedFields));
+    public void placeShips(Player player, List<ShipSegment> occupiedFields, boolean createVisible) {
+        player.setShips(ShipsFactory.createFleet(occupiedFields, createVisible));
     }
 
     public boolean checkIfPlayerLost(Player player) {
@@ -106,6 +119,15 @@ public class GameController {
 
     public List<ShipSegment> getComputerPlayersFields() {
         return this.computerPlayer.getFieldsOccupiedByShips();
+    }
+
+    public List<ShipSegment> getPlayersFields(Player player) {
+        if (player == this.humanPlayer) {
+            return this.humanPlayer.getFieldsOccupiedByShips();
+        } else {
+            return this.computerPlayer.getFieldsOccupiedByShips();
+        }
+
     }
 
     public Attack getActiveAttack() {

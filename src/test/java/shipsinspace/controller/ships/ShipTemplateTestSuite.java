@@ -124,5 +124,31 @@ public class ShipTemplateTestSuite {
         Assert.assertTrue(newShipSegment1.isDestroyed());
     }
 
+    @Test
+    public void testIsDestroyed() {
+        // Given
+        TestShipType testShip = new TestShipType();
+        ShipSegment newShipSegment1 = new ShipSegment(1, 1);
+        ShipSegment newShipSegment2 = new ShipSegment(2, 1);
+        testShip.addShipSegment(newShipSegment1);
+        testShip.addShipSegment(newShipSegment2);
+        System.out.print("Testing ship isDestroyed() method...");
+
+        // When
+        boolean initialIsDestroyedStatus = testShip.isDestroyed();
+
+        Coordinates attackCoordinates1 = new Coordinates(1, 1);
+        testShip.destroyShipSegment(attackCoordinates1);
+        boolean intermediateIsDestroyedStatus = testShip.isDestroyed();
+
+        Coordinates attackCoordinates2 = new Coordinates(2, 1);
+        testShip.destroyShipSegment(attackCoordinates2);
+        boolean finalIsDestroyedStatus = testShip.isDestroyed();
+
+        // Then
+        Assert.assertFalse(initialIsDestroyedStatus);
+        Assert.assertFalse(intermediateIsDestroyedStatus);
+        Assert.assertTrue(finalIsDestroyedStatus);
+    }
 
 }

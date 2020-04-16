@@ -15,14 +15,17 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import shipsinspace.registers.ScenesRegister;
 import shipsinspace.view.GameWindow;
 import shipsinspace.view.difficultySelectionScene.DifficultySelection;
 
 public class HomeScreen {
 
-    public static Scene display(Scene nextScene) {
-
+    public Scene display() {
         Stage window = GameWindow.getPrimaryStage();
+
+        ScenesRegister scenesRegister = ScenesRegister.getInstance();
+        Scene nextScene = scenesRegister.getDifficultySelectionScene();
 
         Image bkg = new Image(HomeScreen.class.getResourceAsStream("/backgrounds/background_stars.jpg"));
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, false, true);
@@ -35,7 +38,6 @@ public class HomeScreen {
 
         Text pressAnyKeyText = new Text("Click mouse to continue...");
         pressAnyKeyText.setId("pressAnyKeyText");
-        pressAnyKeyText.setFill(Color.WHITE);  // For some reason CSS won`t work for it
 
         FadeTransition pressAnyKeyTextFadeTransition = new FadeTransition(Duration.seconds(2.0), pressAnyKeyText);
         pressAnyKeyTextFadeTransition.setFromValue(1.0);

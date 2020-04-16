@@ -1,7 +1,6 @@
-package shipsinspace.gameRegister;
+package shipsinspace.registers;
 
 import org.junit.*;
-import shipsinspace.controller.GameController;
 
 public class GameRegisterTestSuite {
     @BeforeClass
