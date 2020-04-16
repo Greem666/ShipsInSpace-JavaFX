@@ -23,7 +23,7 @@ public class GameOver {
         Stage window = GameWindow.getPrimaryStage();
         ScenesRegister scenesRegister = ScenesRegister.getInstance();
 
-        Image bkg = new Image(HomeScreen.class.getResourceAsStream("/backgrounds/background_stars.jpg"));
+        Image bkg = new Image(getClass().getResourceAsStream("/backgrounds/background_stars.jpg"));
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, false, true);
         BackgroundImage backgroundImage = new BackgroundImage(bkg, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         Background background = new Background(backgroundImage);
