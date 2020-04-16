@@ -20,13 +20,8 @@ public class ScenesRegister {
     private static ScenesRegister instance;
     private Scene gameOverScene, gameBoardScene, difficultySelectionScene, homeScreenScene;
     private Stage window;
-    private MediaPlayer backgroundMusicPlayer;
-    private MediaPlayer sfxPlayer;
 
     private ScenesRegister() {
-        Media sound = new Media(new File("src/main/resources/sounds/backgroundMusic/backgroundMusic.mp3").toURI().toString());
-        this.backgroundMusicPlayer = new MediaPlayer(sound);
-        this.sfxPlayer = new MediaPlayer(sound);
     }
 
     public static ScenesRegister getInstance() {
@@ -34,31 +29,6 @@ public class ScenesRegister {
             instance = new ScenesRegister();
         }
         return instance;
-    }
-
-    public void playBackgroundMusic() {
-        backgroundMusicPlayer.seek(Duration.ZERO);
-        backgroundMusicPlayer.play();
-        backgroundMusicPlayer.setVolume(0.5);
-        backgroundMusicPlayer.play();
-    }
-
-    public void playHumanPlayerShot() {
-        playSound("src/main/resources/sounds/effects/playerShot.mp3");
-    }
-
-    public void playComputerPlayerShot() {
-        playSound("src/main/resources/sounds/effects/computerShot.mp3");
-    }
-
-    public void playExplosionSound() {
-        playSound("src/main/resources/sounds/effects/explosion.mp3");
-    }
-
-    public void playSound(String soundPath) {
-        Media shotSound = new Media(new File(soundPath).toURI().toString());
-        this.sfxPlayer = new MediaPlayer(shotSound);
-        this.sfxPlayer.play();
     }
 
     public void resetScenesRegister() {
