@@ -1,5 +1,6 @@
 package shipsinspace.view.gameBoardScene.board;
 
+import javafx.animation.PauseTransition;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
@@ -9,6 +10,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import shipsinspace.common.EventManager;
 import shipsinspace.controller.player.Player;
 import shipsinspace.controller.ships.ShipSegment;
@@ -170,17 +172,6 @@ public class Board {
         }
     }
 
-    public void markHit(Coordinates coordinates) {
-        for (Node node: this.board.getChildren()) {
-            if (!(node instanceof StackPane)) {
-                Tile tile = (Tile) node;
-                if (tile.getCoordinates().equals(coordinates)) {
-                    tile.setFill(Color.RED);
-                }
-            }
-        }
-    }
-
     public Effects getEffectElementOnAttackedPanel(Coordinates coordinates) {
         return (Effects) this.board.getChildren().stream()
                 .map(e -> ((StackPane)e).getChildren())
@@ -193,8 +184,14 @@ public class Board {
         carryOutHumanPlayerTurn(clickedField);
         checkGameStatus();
 
-        carryOutComputerPlayerTurn();
-        checkGameStatus();
+        PauseTransition humanAndComputerMoveDelay = new PauseTransition(Duration.seconds(0.5));
+
+        humanAndComputerMoveDelay.setOnFinished(e -> {
+            carryOutComputerPlayerTurn();
+            checkGameStatus();
+        });
+
+        humanAndComputerMoveDelay.play();
     }
 
     public void carryOutHumanPlayerTurn(StackPane clickedField) {
