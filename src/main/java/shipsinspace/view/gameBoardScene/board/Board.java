@@ -14,6 +14,7 @@ import javafx.util.Duration;
 import shipsinspace.common.EventManager;
 import shipsinspace.controller.player.Player;
 import shipsinspace.controller.ships.ShipSegment;
+import shipsinspace.controller.ships.ShipTemplate;
 import shipsinspace.registers.GameRegister;
 import shipsinspace.common.Coordinates;
 import shipsinspace.controller.GameController;
@@ -185,7 +186,6 @@ public class Board {
         checkGameStatus();
 
         PauseTransition humanAndComputerMoveDelay = new PauseTransition(Duration.seconds(0.5));
-
         humanAndComputerMoveDelay.setOnFinished(e -> {
             carryOutComputerPlayerTurn();
             checkGameStatus();
@@ -216,12 +216,42 @@ public class Board {
     }
 
     public void checkGameStatus() {
-        if (gameRegister.getGameStatus().equals("human_lost") || gameRegister.getGameStatus().equals("computer_lost")) {
+        if (gameRegister.getGameStatus().equals("human_lost")) {
             //TODO: Singleton to receive information about player who lost all ships
             //TODO: Some game end animation, before scene switch
+            playHumanLostAnimation();
             Stage window = ScenesRegister.getInstance().getWindow();
             Scene gameOverScene = ScenesRegister.getInstance().getGameOverScene();
             window.setScene(gameOverScene);
+        } else if (gameRegister.getGameStatus().equals("computer_lost")) {
+            //TODO: Singleton to receive information about player who lost all ships
+            //TODO: Some game end animation, before scene switch
+            playComputerLostAnimation();
+            Stage window = ScenesRegister.getInstance().getWindow();
+            Scene gameOverScene = ScenesRegister.getInstance().getGameOverScene();
+            window.setScene(gameOverScene);
+        }
+    }
+
+    private void playHumanLostAnimation() {
+        playLostAnimation(this.backEndLogic.getHumanPlayersFields());
+    }
+
+    private void playComputerLostAnimation() {
+        playLostAnimation(this.backEndLogic.getComputerPlayersFields());
+    }
+
+    private void playLostAnimation(List<ShipSegment> shipSegments) {
+        for (int i = 0; i < 5; i++) {
+            for (ShipSegment shipSegment: shipSegments) {
+                Effects effectsLayer = getEffectsFromCoordinates(shipSegment);
+
+                PauseTransition delayBetweenAnimations = new PauseTransition(Duration.seconds(0.3));
+                delayBetweenAnimations.setOnFinished(e -> {
+                    System.out.println("Playing effects animation on coordinates " + effectsLayer);
+                    effectsLayer.animateHumanPlayerExplosion();
+                });
+            }
         }
     }
 
@@ -265,6 +295,13 @@ public class Board {
     private Effects getEffectsFrom(StackPane stackPane) {
         return (Effects) stackPane.getChildren().stream()
                 .filter(node -> node instanceof Effects)
+                .collect(Collectors.toList()).get(0);
+    }
+
+    private Effects getEffectsFromCoordinates(Coordinates coordinates) {
+        return this.board.getChildren().stream()
+                .filter(e -> ((Tile)((StackPane) e).getChildren().get(0)).getCoordinates().equals(coordinates))
+                .map(e -> getEffectsFrom((StackPane)e))
                 .collect(Collectors.toList()).get(0);
     }
 }

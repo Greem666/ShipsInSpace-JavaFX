@@ -109,10 +109,6 @@ public class GameController {
         player.setShips(ShipsFactory.createFleet(occupiedFields, createVisible));
     }
 
-    public boolean checkIfPlayerLost(Player player) {
-        return player.getFieldsOccupiedByShips().size() > 0;
-    }
-
     public List<ShipSegment> getHumanPlayersFields() {
         return this.humanPlayer.getFieldsOccupiedByShips();
     }
