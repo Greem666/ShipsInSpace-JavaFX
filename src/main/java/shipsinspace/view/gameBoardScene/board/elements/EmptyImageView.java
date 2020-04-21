@@ -1,4 +1,4 @@
-package shipsinspace.view.gameBoardScene.board;
+package shipsinspace.view.gameBoardScene.board.elements;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

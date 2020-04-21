@@ -1,6 +1,6 @@
 package shipsinspace.view.gameBoardScene.board;
 
-import javafx.animation.PauseTransition;
+import javafx.animation.*;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
@@ -8,23 +8,25 @@ import javafx.scene.layout.Region;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import shipsinspace.common.EventManager;
 import shipsinspace.controller.player.Player;
 import shipsinspace.controller.ships.ShipSegment;
-import shipsinspace.controller.ships.ShipTemplate;
 import shipsinspace.registers.GameRegister;
 import shipsinspace.common.Coordinates;
 import shipsinspace.controller.GameController;
 import shipsinspace.controller.ships.attackTypes.Attack;
 import shipsinspace.registers.ScenesRegister;
 import shipsinspace.registers.SoundsRegister;
-import shipsinspace.view.GameWindow;
 import shipsinspace.view.difficultySelectionScene.DifficultySelection;
-import shipsinspace.view.gameOverScene.GameOver;
+import shipsinspace.view.gameBoardScene.board.elements.Effects;
+import shipsinspace.view.gameBoardScene.board.elements.ShipView;
+import shipsinspace.view.gameBoardScene.board.elements.Tile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -36,17 +38,15 @@ public class Board {
     private int tilesCount = 11;
 
     private Attack ACTIVE_ATTACK;
-    private GridPane board;
+    private StackPane board;
 
     private GameRegister gameRegister;
     private GameController backEndLogic;
 
-    private Image shipPlayerImage = new Image(getClass().getResourceAsStream("/ships/shipSegmentPlayer.png"));
-    private Image shipComputerImage = new Image(getClass().getResourceAsStream("/ships/shipSegmentEnemy2.png"));
-    private Image shipPlayerDamagedImage = new Image(getClass().getResourceAsStream("/ships/shipSegmentPlayerDamaged.png"));
-    private Image shipComputerDamagedImage = new Image(getClass().getResourceAsStream("/ships/shipSegmentEnemyDamaged.png"));
-
-    private EventManager eventManager;
+    private final Image shipPlayerImage = new Image(getClass().getResourceAsStream("/ships/shipSegmentPlayer.png"));
+    private final Image shipComputerImage = new Image(getClass().getResourceAsStream("/ships/shipSegmentEnemy2.png"));
+    private final Image shipPlayerDamagedImage = new Image(getClass().getResourceAsStream("/ships/shipSegmentPlayerDamaged.png"));
+    private final Image shipComputerDamagedImage = new Image(getClass().getResourceAsStream("/ships/shipSegmentEnemyDamaged.png"));
 
     public Board(GameController gameController, double boardWidth, double boardHeight) {
         this.boardWidth = boardWidth;
@@ -72,9 +72,9 @@ public class Board {
         Background background = new Background(backgroundImage);
 
         // GAME BOARD
-        GridPane gameBoardLayout = new GridPane();
-        gameBoardLayout.setId("grid");
-        gameBoardLayout.setBackground(background);
+        GridPane gameBoardTilesLayout = new GridPane();
+        gameBoardTilesLayout.setId("grid");
+        gameBoardTilesLayout.setBackground(background);
 
         for (int col = 0; col < tilesCount; col++) {
             for (int row = 0; row < tilesCount; row++) {
@@ -91,7 +91,7 @@ public class Board {
                     text.getStyleClass().add("boardMarkings");
 
                     fieldStack.getChildren().add(text);
-                    gameBoardLayout.add(fieldStack, row, col);
+                    gameBoardTilesLayout.add(fieldStack, row, col);
 
                     tile.getStyleClass().add("boardMarkingTiles");
 
@@ -105,7 +105,7 @@ public class Board {
                     Effects effects = new Effects(TILE_SIZE);
 
                     fieldStack.getChildren().addAll(shipView, effects);
-                    gameBoardLayout.add(fieldStack, row, col);
+                    gameBoardTilesLayout.add(fieldStack, row, col);
                 }
 
                 if (col != 0 && row != 0) {
@@ -131,7 +131,14 @@ public class Board {
             }
         }
 
-        gameBoardLayout.getStylesheets().add(DifficultySelection.class.getResource("/css/gameBoardScene.css").toExternalForm());
+        StackPane gameBoardLayout = new StackPane();
+        gameBoardTilesLayout.getStylesheets().add(DifficultySelection.class.getResource("/css/gameBoardScene.css").toExternalForm());
+
+        Rectangle backgroundShadow = new Rectangle(600, 600);
+        backgroundShadow.setFill(Color.TRANSPARENT);
+        backgroundShadow.setMouseTransparent(true);
+
+        gameBoardLayout.getChildren().addAll(gameBoardTilesLayout, backgroundShadow);
 
         this.board = gameBoardLayout;
 
@@ -151,19 +158,24 @@ public class Board {
 
     public void drawPlayerShips(List<ShipSegment> playerOccupiedFields, Image imageShipFunctional, Image imageShipDestroyed) {
         for (ShipSegment shipSegment: playerOccupiedFields) {
-            for (Node node: this.board.getChildren()) {
-                StackPane stackPane = (StackPane) node;
-                for (Node tileCandidate: stackPane.getChildren()) {
-                    if (tileCandidate instanceof Tile) {
-                        Tile tile = (Tile) tileCandidate;
-                        if (tile.getCoordinates().equals(shipSegment)) {
-                            ShipView shipView = (ShipView) stackPane.getChildren().get(1);
-                            if (shipSegment.isVisible()) {
-                                if (shipSegment.isDestroyed()) {
-                                    shipView.setImage(imageShipDestroyed);
-                                    shipView.startDamagedAnimation();
-                                } else {
-                                    shipView.setImage(imageShipFunctional);
+            for (Node stackPaneNode: this.board.getChildren()) {
+                if (stackPaneNode instanceof GridPane) {
+                    GridPane gridPane = (GridPane) stackPaneNode;
+                    for (Node gridPaneNode: gridPane.getChildren()) {
+                        StackPane stackPane = (StackPane) gridPaneNode;
+                        for (Node tileCandidate: stackPane.getChildren()) {
+                            if (tileCandidate instanceof Tile) {
+                                Tile tile = (Tile) tileCandidate;
+                                if (tile.getCoordinates().equals(shipSegment)) {
+                                    ShipView shipView = (ShipView) stackPane.getChildren().get(1);
+                                    if (shipSegment.isVisible()) {
+                                        if (shipSegment.isDestroyed()) {
+                                            shipView.setImage(imageShipDestroyed);
+                                            shipView.startDamagedAnimation();
+                                        } else {
+                                            shipView.setImage(imageShipFunctional);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -174,7 +186,7 @@ public class Board {
     }
 
     public Effects getEffectElementOnAttackedPanel(Coordinates coordinates) {
-        return (Effects) this.board.getChildren().stream()
+        return (Effects) ((GridPane)this.board.getChildren().get(0)).getChildren().stream()
                 .map(e -> ((StackPane)e).getChildren())
                 .filter(e -> ((Tile)e.get(0)).getCoordinates().equals(coordinates))
                 .map(e -> e.get(2))
@@ -216,43 +228,60 @@ public class Board {
     }
 
     public void checkGameStatus() {
+        Transition animation = new SequentialTransition();
         if (gameRegister.getGameStatus().equals("human_lost")) {
-            //TODO: Singleton to receive information about player who lost all ships
-            //TODO: Some game end animation, before scene switch
-            playHumanLostAnimation();
-            Stage window = ScenesRegister.getInstance().getWindow();
-            Scene gameOverScene = ScenesRegister.getInstance().getGameOverScene();
-            window.setScene(gameOverScene);
+            animation = playHumanLostAnimation();
+
         } else if (gameRegister.getGameStatus().equals("computer_lost")) {
-            //TODO: Singleton to receive information about player who lost all ships
-            //TODO: Some game end animation, before scene switch
-            playComputerLostAnimation();
+            animation = playComputerLostAnimation();
+        }
+        animation.setOnFinished(e -> {
             Stage window = ScenesRegister.getInstance().getWindow();
             Scene gameOverScene = ScenesRegister.getInstance().getGameOverScene();
             window.setScene(gameOverScene);
+        });
+    }
+
+    private Transition playHumanLostAnimation() {
+        return playLostAnimation(this.backEndLogic.getHumanPlayersFields());
+    }
+
+    private Transition playComputerLostAnimation() {
+        return playLostAnimation(this.backEndLogic.getComputerPlayersFields());
+    }
+
+    private Transition playLostAnimation(List<ShipSegment> shipSegments) {
+        // Ship segments explosions
+        List<Transition> effectsFieldsOccupiedByShipFragments = new ArrayList<>();
+        for (ShipSegment shipSegment: shipSegments) {
+            Transition animation = getEffectsFromCoordinates(shipSegment).gameOverAnimation(100);
+            effectsFieldsOccupiedByShipFragments.add(animation);
         }
-    }
 
-    private void playHumanLostAnimation() {
-        playLostAnimation(this.backEndLogic.getHumanPlayersFields());
-    }
+        SequentialTransition explosionsSequence = new SequentialTransition();
+        explosionsSequence.getChildren().addAll(effectsFieldsOccupiedByShipFragments);
+        explosionsSequence.setCycleCount(4);
 
-    private void playComputerLostAnimation() {
-        playLostAnimation(this.backEndLogic.getComputerPlayersFields());
-    }
+        // Screen fading
+        FillTransition screenWhitening = new FillTransition(Duration.millis(6400), (Rectangle) this.board.getChildren().get(1));
+        screenWhitening.setFromValue(Color.TRANSPARENT);
+        screenWhitening.setToValue(Color.WHITE);
+        screenWhitening.setCycleCount(1);
+        screenWhitening.setAutoReverse(false);
 
-    private void playLostAnimation(List<ShipSegment> shipSegments) {
-        for (int i = 0; i < 5; i++) {
-            for (ShipSegment shipSegment: shipSegments) {
-                Effects effectsLayer = getEffectsFromCoordinates(shipSegment);
+        // Screen shaking
+        TranslateTransition screenShaking = new TranslateTransition(Duration.millis(50), (GridPane) this.board.getChildren().get(0));
+        screenShaking.setFromX(this.board.getTranslateX() - 7);
+        screenShaking.setToX(this.board.getTranslateX() + 7);
+        screenShaking.setCycleCount(128);
+        screenShaking.setAutoReverse(true);
 
-                PauseTransition delayBetweenAnimations = new PauseTransition(Duration.seconds(0.3));
-                delayBetweenAnimations.setOnFinished(e -> {
-                    System.out.println("Playing effects animation on coordinates " + effectsLayer);
-                    effectsLayer.animateHumanPlayerExplosion();
-                });
-            }
-        }
+        // Final animation
+        ParallelTransition complexAnimation = new ParallelTransition();
+        complexAnimation.getChildren().addAll(explosionsSequence, screenShaking, screenWhitening);
+        complexAnimation.play();
+
+        return complexAnimation;
     }
 
     public void redrawShipsOfHitParty(Player playerHit) {
@@ -299,7 +328,7 @@ public class Board {
     }
 
     private Effects getEffectsFromCoordinates(Coordinates coordinates) {
-        return this.board.getChildren().stream()
+        return ((GridPane) this.board.getChildren().get(0)).getChildren().stream()
                 .filter(e -> ((Tile)((StackPane) e).getChildren().get(0)).getCoordinates().equals(coordinates))
                 .map(e -> getEffectsFrom((StackPane)e))
                 .collect(Collectors.toList()).get(0);

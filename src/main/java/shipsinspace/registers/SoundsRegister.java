@@ -43,13 +43,22 @@ public class SoundsRegister {
         playSound("src/main/resources/sounds/effects/explosion.mp3");
     }
 
+    public void playExplosionSound(double playbackRate) {
+        playSound("src/main/resources/sounds/effects/explosion.mp3", playbackRate);
+    }
+
     public void playButtonClickSound() {
         playSound("src/main/resources/sounds/effects/buttonClick.mp3");
     }
 
     public void playSound(String soundPath) {
+        playSound(soundPath, 1.0);
+    }
+
+    public void playSound(String soundPath, double playbackRate) {
         Media shotSound = new Media(new File(soundPath).toURI().toString());
         this.sfxPlayer = new MediaPlayer(shotSound);
+        this.sfxPlayer.setRate(playbackRate);
         this.sfxPlayer.play();
     }
 }

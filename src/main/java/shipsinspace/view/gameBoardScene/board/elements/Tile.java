@@ -1,4 +1,4 @@
-package shipsinspace.view.gameBoardScene.board;
+package shipsinspace.view.gameBoardScene.board.elements;
 
 import javafx.animation.FillTransition;
 import javafx.beans.NamedArg;
