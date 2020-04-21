@@ -15,6 +15,7 @@ public class AlertWindow {
         window.setTitle(title);
         window.initModality(Modality.APPLICATION_MODAL);
         window.setMinWidth(250);
+        window.setMinHeight(200);
 
         Label label = new Label(message);
         Button closeButton = new Button("Close");

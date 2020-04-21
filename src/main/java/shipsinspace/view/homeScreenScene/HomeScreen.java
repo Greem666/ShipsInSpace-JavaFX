@@ -4,6 +4,7 @@ import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -17,6 +18,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import shipsinspace.registers.ScenesRegister;
 import shipsinspace.view.GameWindow;
+import shipsinspace.view.common.topmenu.TopMenu;
 import shipsinspace.view.difficultySelectionScene.DifficultySelection;
 
 public class HomeScreen {
@@ -27,8 +29,10 @@ public class HomeScreen {
         ScenesRegister scenesRegister = ScenesRegister.getInstance();
         Scene nextScene = scenesRegister.getDifficultySelectionScene();
 
-//        scenesRegister.getMediaPlayer().play();
+        // MenuBar
+        Region menuBar = new TopMenu().generateElement();
 
+        // Main Window
         Image bkg = new Image(HomeScreen.class.getResourceAsStream("/backgrounds/background_stars.jpg"));
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, false, true);
         BackgroundImage backgroundImage = new BackgroundImage(bkg, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
@@ -53,7 +57,7 @@ public class HomeScreen {
         homeScreenTextLayout.setAlignment(Pos.CENTER);
         homeScreenTextLayout.setSpacing(40);
         homeScreenTextLayout.setBackground(background);
-        homeScreenTextLayout.getChildren().addAll(titleText, pressAnyKeyText);
+        homeScreenTextLayout.getChildren().addAll(menuBar, titleText, pressAnyKeyText);
 
         Scene homeScreenScene = new Scene(homeScreenTextLayout, 600, 600);
         homeScreenScene.getStylesheets().add(DifficultySelection.class.getResource("/css/homeScreenSceneStyles.css").toExternalForm());

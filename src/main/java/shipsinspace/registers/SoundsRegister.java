@@ -31,6 +31,14 @@ public class SoundsRegister {
         backgroundMusicPlayer.play();
     }
 
+    public void stopBackgroundMusic() {
+        backgroundMusicPlayer.stop();
+    }
+
+    public boolean isPlayingBackgroundMusic() {
+        return backgroundMusicPlayer.getStatus().equals(MediaPlayer.Status.PLAYING);
+    }
+
     public void playHumanPlayerShot() {
         playSound("src/main/resources/sounds/effects/playerShot.mp3");
     }
