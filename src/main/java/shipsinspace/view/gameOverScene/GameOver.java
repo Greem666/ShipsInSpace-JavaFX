@@ -11,6 +11,7 @@ import shipsinspace.registers.GameRegister;
 import shipsinspace.registers.ScenesRegister;
 import shipsinspace.registers.SoundsRegister;
 import shipsinspace.view.GameWindow;
+import shipsinspace.view.common.topmenu.TopMenu;
 import shipsinspace.view.difficultySelectionScene.DifficultySelection;
 
 import java.util.stream.Stream;
@@ -27,11 +28,20 @@ public class GameOver {
         BackgroundImage backgroundImage = new BackgroundImage(bkg, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         Background background = new Background(backgroundImage);
 
+        // MenuBar
+        Region menuBar = new TopMenu().generateElement();
+
+
         // Layout
         VBox gameOverLayout = new VBox();
         gameOverLayout.setAlignment(Pos.CENTER);
         gameOverLayout.setBackground(background);
         gameOverLayout.setSpacing(20);
+
+        // Window layout
+        BorderPane homeScreenObjectsLayout = new BorderPane();
+        homeScreenObjectsLayout.setTop(menuBar);
+        homeScreenObjectsLayout.setCenter(gameOverLayout);
 
         // Would you like to play again label
         Text youWonOrLostText = new Text();
@@ -68,7 +78,7 @@ public class GameOver {
                 });
 
         gameOverLayout.getChildren().addAll(youWonOrLostText, gameOverText, playAgainButton, quitButton);
-        Scene gameOverScene = new Scene(gameOverLayout, 600, 600);
+        Scene gameOverScene = new Scene(homeScreenObjectsLayout, ScenesRegister.sceneWidth, ScenesRegister.sceneHeight);
         gameOverScene.getStylesheets().add(DifficultySelection.class.getResource("/css/gameOverSceneStyles.css").toExternalForm());
 
         return gameOverScene;

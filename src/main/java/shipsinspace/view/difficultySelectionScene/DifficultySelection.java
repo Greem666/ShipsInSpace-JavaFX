@@ -11,6 +11,7 @@ import shipsinspace.registers.GameRegister;
 import shipsinspace.registers.ScenesRegister;
 import shipsinspace.registers.SoundsRegister;
 import shipsinspace.view.GameWindow;
+import shipsinspace.view.common.topmenu.TopMenu;
 import shipsinspace.view.homeScreenScene.HomeScreen;
 
 import java.util.stream.Stream;
@@ -33,11 +34,19 @@ public class DifficultySelection {
         BackgroundImage backgroundImage = new BackgroundImage(bkg, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         Background background = new Background(backgroundImage);
 
-        // Layout
+        // Top Layout - MenuBar
+        Region menuBar = new TopMenu().generateElement();
+
+        // Center Layout
         VBox difficultySelectionLayout = new VBox();
         difficultySelectionLayout.setAlignment(Pos.CENTER);
         difficultySelectionLayout.setBackground(background);
         difficultySelectionLayout.setSpacing(20);
+
+        // Window Layout
+        BorderPane difficultySelectionScreenObjectsLayout = new BorderPane();
+        difficultySelectionScreenObjectsLayout.setTop(menuBar);
+        difficultySelectionScreenObjectsLayout.setCenter(difficultySelectionLayout);
 
         // Label
         Text selectDifficultyText = new Text("Please select game difficulty:");
@@ -69,7 +78,8 @@ public class DifficultySelection {
                 });
 
         difficultySelectionLayout.getChildren().addAll(selectDifficultyText, easyButton, mediumButton, hardButton);
-        Scene difficultySelectionScene = new Scene(difficultySelectionLayout, 600, 600);
+
+        Scene difficultySelectionScene = new Scene(difficultySelectionScreenObjectsLayout, ScenesRegister.sceneWidth, ScenesRegister.sceneHeight);
         difficultySelectionScene.getStylesheets().add(DifficultySelection.class.getResource("/css/difficultySelectionSceneStyles.css").toExternalForm());
 
         return difficultySelectionScene;

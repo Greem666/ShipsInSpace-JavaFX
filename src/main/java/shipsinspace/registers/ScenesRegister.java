@@ -12,6 +12,8 @@ public class ScenesRegister {
     private static ScenesRegister instance;
     private Scene gameOverScene, gameBoardScene, difficultySelectionScene, homeScreenScene;
     private Stage window;
+    public static final int sceneWidth = 600;
+    public static final int sceneHeight = 625;
 
     private ScenesRegister() {
     }

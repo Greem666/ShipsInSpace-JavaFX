@@ -52,19 +52,24 @@ public class HomeScreen {
         pressAnyKeyTextFadeTransition.setAutoReverse(true);
         pressAnyKeyTextFadeTransition.play();
 
-        // Layout
+        // Text Layout
         VBox homeScreenTextLayout = new VBox();
         homeScreenTextLayout.setAlignment(Pos.CENTER);
         homeScreenTextLayout.setSpacing(40);
         homeScreenTextLayout.setBackground(background);
-        homeScreenTextLayout.getChildren().addAll(menuBar, titleText, pressAnyKeyText);
+        homeScreenTextLayout.getChildren().addAll(titleText, pressAnyKeyText);
 
-        Scene homeScreenScene = new Scene(homeScreenTextLayout, 600, 600);
-        homeScreenScene.getStylesheets().add(DifficultySelection.class.getResource("/css/homeScreenSceneStyles.css").toExternalForm());
-
-        homeScreenScene.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
+        homeScreenTextLayout.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
             window.setScene(nextScene);
         });
+
+        // Window layout
+        BorderPane homeScreenObjectsLayout = new BorderPane();
+        homeScreenObjectsLayout.setTop(menuBar);
+        homeScreenObjectsLayout.setCenter(homeScreenTextLayout);
+
+        Scene homeScreenScene = new Scene(homeScreenObjectsLayout, ScenesRegister.sceneWidth, ScenesRegister.sceneHeight);
+        homeScreenScene.getStylesheets().add(DifficultySelection.class.getResource("/css/homeScreenSceneStyles.css").toExternalForm());
 
         return homeScreenScene;
     }
