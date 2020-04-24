@@ -17,7 +17,8 @@ public final class GameRegister {
 
     private Integer gameDifficulty = 1;
 
-    private String humanPlayerName;
+    private String humanPlayerName = "Player";
+    private String computerPlayerName = "Computer";
 
     private List<String> humanShipList;
     private List<String> computerShipList;
@@ -31,7 +32,6 @@ public final class GameRegister {
     private String gameStatus = "game_on";
 
     private GameRegister() {
-//        this.gameController = gameController;
     }
 
     public static GameRegister getInstance() {
@@ -41,13 +41,9 @@ public final class GameRegister {
         return instance;
     }
 
-//    public GameController getGameController() {
-//        return gameController;
-//    }
-
     public void resetGameInfo() {
 
-        humanPlayerName = null;
+        humanPlayerName = "Player";
 
         humanShipList = new ArrayList<>();
         computerShipList = new ArrayList<>();
@@ -62,7 +58,11 @@ public final class GameRegister {
     }
 
     public String getHumanPlayerName() {
-        return humanPlayerName;
+        return this.humanPlayerName;
+    }
+
+    public String getComputerPlayerName() {
+        return this.computerPlayerName;
     }
 
     public void setHumanPlayerName(String humanPlayerName) {
