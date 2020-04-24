@@ -2,10 +2,13 @@ package shipsinspace.view;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import shipsinspace.registers.ScenesRegister;
 import shipsinspace.registers.SoundsRegister;
 import shipsinspace.view.common.ConfirmBox;
+import shipsinspace.view.common.QuitAlertBox;
 
 public class GameWindow extends Application {
     // window
@@ -47,9 +50,9 @@ public class GameWindow extends Application {
     }
 
     private void closeProgram() {
-        Boolean answer = ConfirmBox.display("Close program", "Sure, you want to exit \"Ships... but in Space\"?");
+        ButtonType answer = QuitAlertBox.closeProgram();
         Stage window = GameWindow.getPrimaryStage();
-        if (answer) {
+        if (answer == ButtonType.OK) {
             window.close();
         }
     }
