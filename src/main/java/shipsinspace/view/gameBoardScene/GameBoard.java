@@ -26,7 +26,6 @@ public class GameBoard {
         this.backEnd.gameStatusReset();
 
         ScenesRegister scenesRegister = ScenesRegister.getInstance();
-        Scene nextScene = scenesRegister.getGameOverScene();
 
         Board board = new Board(this.backEnd, 600, 600);
 //        BottomMenu bottomMenu = new BottomMenu(600, 200, 10);

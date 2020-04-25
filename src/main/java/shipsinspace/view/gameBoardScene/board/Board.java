@@ -1,18 +1,25 @@
 package shipsinspace.view.gameBoardScene.board;
 
 import javafx.animation.*;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import shipsinspace.common.EventManager;
 import shipsinspace.controller.player.Player;
 import shipsinspace.controller.ships.ShipSegment;
 import shipsinspace.registers.GameRegister;
@@ -26,8 +33,10 @@ import shipsinspace.view.gameBoardScene.board.elements.Effects;
 import shipsinspace.view.gameBoardScene.board.elements.ShipView;
 import shipsinspace.view.gameBoardScene.board.elements.Tile;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -132,13 +141,22 @@ public class Board {
         }
 
         StackPane gameBoardLayout = new StackPane();
-        gameBoardTilesLayout.getStylesheets().add(DifficultySelection.class.getResource("/css/gameBoardScene.css").toExternalForm());
 
         Rectangle backgroundShadow = new Rectangle(600, 600);
         backgroundShadow.setFill(Color.TRANSPARENT);
         backgroundShadow.setMouseTransparent(true);
 
-        gameBoardLayout.getChildren().addAll(gameBoardTilesLayout, backgroundShadow);
+        Text announcementText = new Text();
+        announcementText.setId("announcement");
+        announcementText.setMouseTransparent(true);
+        announcementText.setTextAlignment(TextAlignment.CENTER);
+        announcementText.setFont(Font.font("Verdena", FontWeight.BOLD, 45));
+        announcementText.setFill(Color.TRANSPARENT);
+//        announcementText.setStroke(Color.YELLOW);
+//        announcementText.setStrokeWidth(2);
+
+        gameBoardTilesLayout.getStylesheets().add(Board.class.getResource("/css/gameBoardScene.css").toExternalForm());
+        gameBoardLayout.getChildren().addAll(gameBoardTilesLayout, backgroundShadow, announcementText);
 
         this.board = gameBoardLayout;
 
@@ -194,16 +212,60 @@ public class Board {
     }
 
     public void carryOutGameTurn(StackPane clickedField) {
+        // Human turn
+        disableHumanInput(true);
         carryOutHumanPlayerTurn(clickedField);
         checkGameStatus();
 
-        PauseTransition humanAndComputerMoveDelay = new PauseTransition(Duration.seconds(0.5));
-        humanAndComputerMoveDelay.setOnFinished(e -> {
+        // Computer turn
+        PauseTransition afterComputerMoveDelay = new PauseTransition(Duration.seconds(0.5));
+        announceComputerTurn().setOnFinished(e -> {
             carryOutComputerPlayerTurn();
             checkGameStatus();
+            afterComputerMoveDelay.setOnFinished(f -> {
+                announcePlayerTurn().setOnFinished(g -> {
+                    disableHumanInput(false);
+                });
+            });
+            afterComputerMoveDelay.play();
         });
+    }
 
-        humanAndComputerMoveDelay.play();
+    public FillTransition announcePlayerTurn() {
+        return announceTurnOwner(gameRegister.getHumanPlayerName());
+    }
+
+    public FillTransition announceComputerTurn() {
+        return announceTurnOwner(gameRegister.getComputerPlayerName());
+    }
+
+    public FillTransition announceTurnOwner(String turnOwner) {
+        Text text = (Text) this.board.getChildren().get(2);
+        text.setText(turnOwner + "'s turn");
+        FillTransition textDisplayTransition = new FillTransition(Duration.seconds(1.0), text, Color.TRANSPARENT, Color.YELLOW);
+        textDisplayTransition.setAutoReverse(true);
+        textDisplayTransition.setCycleCount(2);
+        textDisplayTransition.play();
+
+        return textDisplayTransition;
+    }
+
+    private void disableHumanInput(boolean isDisabled) {
+        EventHandler<MouseEvent> handler = MouseEvent::consume;
+
+        if (isDisabled) {
+            // block events
+            this.board.getChildren().stream()
+                    .filter(node -> node instanceof GridPane)
+                    .flatMap(node -> ((GridPane) node).getChildren().stream())
+                    .forEach(node -> ((StackPane) node).addEventFilter(MouseEvent.MOUSE_CLICKED, handler));
+        } else {
+            // restore events
+            this.board.getChildren().stream()
+                    .filter(node -> node instanceof GridPane)
+                    .flatMap(node -> ((GridPane) node).getChildren().stream())
+                    .forEach(node -> ((StackPane) node).removeEventFilter(MouseEvent.MOUSE_CLICKED, handler));
+        }
     }
 
     public void carryOutHumanPlayerTurn(StackPane clickedField) {
@@ -211,14 +273,11 @@ public class Board {
         this.backEndLogic.gameTurn(getTileFrom(clickedField).getCoordinates());
         Player playerHitByHumanPlayer = gameRegister.getOwnerOfHitObjectHitThisTurnByHumanPlayer();
         getEffectsFrom(clickedField).animateHumanPlayerExplosion();
-//                    this.markPlayerShips(backEndLogic.getHumanPlayersFields(), shipPlayerImage, shipPlayerDamagedImage);
-//                    this.markPlayerShips(backEndLogic.getComputerPlayersFields(), shipComputerImage, shipComputerDamagedImage);
 
         redrawShipsOfHitParty(playerHitByHumanPlayer);
     }
 
     public void carryOutComputerPlayerTurn() {
-//        Player playerHitByComputerPlayer = gameRegister.getOwnerOfHitObjectHitThisTurnByHumanPlayer();
         SoundsRegister.getInstance().playComputerPlayerShot();
         Player playerHitByComputerPlayer = gameRegister.getOwnerOfHitObjectHitThisTurnByComputerPlayer();
         Coordinates coordinatesAttackedByComputer = gameRegister.getCoordinatesComputerPlayerShotAtThisTurn();
@@ -237,6 +296,7 @@ public class Board {
         }
         animation.setOnFinished(e -> {
             Stage window = ScenesRegister.getInstance().getWindow();
+            window.setOnShowing(Event::consume);
             Scene gameOverScene = ScenesRegister.getInstance().getGameOverScene();
             window.setScene(gameOverScene);
         });
@@ -292,9 +352,6 @@ public class Board {
             } else {
                 drawHumanPlayerShips(backEndLogic.getHumanPlayersFields());
             }
-            //TODO: Check if any ships left in game
-        } else {
-            //TODO: Animate miss
         }
     }
 
