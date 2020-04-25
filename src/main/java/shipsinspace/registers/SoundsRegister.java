@@ -28,6 +28,9 @@ public class SoundsRegister {
         backgroundMusicPlayer.seek(Duration.ZERO);
         backgroundMusicPlayer.play();
         backgroundMusicPlayer.setVolume(0.5);
+        backgroundMusicPlayer.setOnEndOfMedia(() -> {
+            backgroundMusicPlayer.seek(Duration.ZERO);
+        });
         backgroundMusicPlayer.play();
     }
 
