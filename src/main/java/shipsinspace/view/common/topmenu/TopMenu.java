@@ -5,7 +5,6 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import shipsinspace.registers.SoundsRegister;
 import shipsinspace.view.GameWindow;
-import shipsinspace.view.common.ConfirmBox;
 import shipsinspace.view.common.QuitAlertBox;
 
 public class TopMenu {
@@ -32,7 +31,7 @@ public class TopMenu {
             if (soundsRegister.isPlayingBackgroundMusic()) {
                 musicOnItem.setSelected(false);
                 musicOffItem.setSelected(true);
-                soundsRegister.stopBackgroundMusic();
+                soundsRegister.pauseBackgroundMusic();
             }
         });
         musicOnItem.setOnAction(e -> {

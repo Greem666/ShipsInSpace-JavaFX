@@ -31,8 +31,8 @@ public class SoundsRegister {
         backgroundMusicPlayer.play();
     }
 
-    public void stopBackgroundMusic() {
-        backgroundMusicPlayer.stop();
+    public void pauseBackgroundMusic() {
+        backgroundMusicPlayer.pause();
     }
 
     public boolean isPlayingBackgroundMusic() {
