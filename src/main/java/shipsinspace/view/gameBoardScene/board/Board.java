@@ -4,6 +4,7 @@ import javafx.animation.*;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
@@ -13,7 +14,10 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import shipsinspace.controller.player.Player;
@@ -143,8 +147,13 @@ public class Board {
         backgroundShadow.setMouseTransparent(true);
 
         Text announcementText = new Text();
-        announcementText.setId("announcementText");
+        announcementText.setId("announcement");
         announcementText.setMouseTransparent(true);
+        announcementText.setTextAlignment(TextAlignment.CENTER);
+        announcementText.setFont(Font.font("Verdena", FontWeight.BOLD, 45));
+        announcementText.setFill(Color.TRANSPARENT);
+//        announcementText.setStroke(Color.YELLOW);
+//        announcementText.setStrokeWidth(2);
 
         gameBoardTilesLayout.getStylesheets().add(Board.class.getResource("/css/gameBoardScene.css").toExternalForm());
         gameBoardLayout.getChildren().addAll(gameBoardTilesLayout, backgroundShadow, announcementText);
@@ -233,7 +242,7 @@ public class Board {
     public FillTransition announceTurnOwner(String turnOwner) {
         Text text = (Text) this.board.getChildren().get(2);
         text.setText(turnOwner + "'s turn");
-        FillTransition textDisplayTransition = new FillTransition(Duration.seconds(1.0), text, Color.TRANSPARENT, Color.WHITE);
+        FillTransition textDisplayTransition = new FillTransition(Duration.seconds(1.0), text, Color.TRANSPARENT, Color.YELLOW);
         textDisplayTransition.setAutoReverse(true);
         textDisplayTransition.setCycleCount(2);
         textDisplayTransition.play();

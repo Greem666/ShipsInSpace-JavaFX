@@ -1,11 +1,11 @@
-#announcementText {
-    -fx-text-alignment: center;
-    -fx-font-family: Verdana;
-    -fx-font-weight: bold;
-    -fx-font-size: 45px;
-    -fx-text-fill: transparent;
-    -fx-stroke-width: 6px;
-    -fx-stroke: yellow;
+#announcement {
+    /*-fx-text-alignment: center;*/
+    /*-fx-font-family: Verdana;*/
+    /*-fx-font-weight: bold;*/
+    /*-fx-font-size: 45px;*/
+    /*-fx-text-fill: transparent;*/
+    /*-fx-stroke-width: 6px;*/
+    /*-fx-stroke: yellow;*/
 }
 
 .boardMarkings {
