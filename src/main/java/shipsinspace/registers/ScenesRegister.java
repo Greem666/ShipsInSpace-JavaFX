@@ -14,6 +14,7 @@ public class ScenesRegister {
     private Stage window;
     public static final int sceneWidth = 600;
     public static final int sceneHeight = 625;
+    public GameBoard gameBoard;
 
     private ScenesRegister() {
     }
@@ -27,6 +28,14 @@ public class ScenesRegister {
 
     public void resetScenesRegister() {
         gameOverScene = gameBoardScene = difficultySelectionScene = homeScreenScene = null;
+    }
+
+    public GameBoard getGameBoard() {
+        return gameBoard;
+    }
+
+    public void setGameBoard(GameBoard gameBoard) {
+        this.gameBoard = gameBoard;
     }
 
     public Scene getGameOverScene() {

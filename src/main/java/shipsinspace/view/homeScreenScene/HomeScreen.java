@@ -4,16 +4,10 @@ import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import shipsinspace.registers.ScenesRegister;
@@ -69,7 +63,7 @@ public class HomeScreen {
         homeScreenObjectsLayout.setCenter(homeScreenTextLayout);
 
         Scene homeScreenScene = new Scene(homeScreenObjectsLayout, ScenesRegister.sceneWidth, ScenesRegister.sceneHeight);
-        homeScreenScene.getStylesheets().add(DifficultySelection.class.getResource("/css/homeScreenSceneStyles.css").toExternalForm());
+        homeScreenScene.getStylesheets().add(DifficultySelection.class.getResource("/css/homeScreenScene/homeScreenSceneStyles.css").toExternalForm());
 
         return homeScreenScene;
     }

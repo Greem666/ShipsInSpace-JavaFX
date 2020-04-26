@@ -1,0 +1,35 @@
+/*.difficultyText {*/
+/*    -fx-font-family: Verdana;*/
+/*    -fx-font-size: 30;*/
+/*    -fx-font-weight: bold;*/
+/*    -fx-text-fill: #fdff6500;*/
+/*    -fx-stroke: yellow;*/
+/*    -fx-stroke-width: 1px;*/
+/*}*/
+
+/*.difficultyButtons:hover {*/
+/*    -fx-border-color: #ffde65e0;*/
+/*    -fx-scale-x: 1.1;*/
+/*    -fx-scale-y: 1.1;*/
+/*}*/
+
+/*.difficultyButtons:pressed {*/
+/*    -fx-scale-y: 1.0;*/
+/*    -fx-scale-x: 1.0;*/
+/*}*/
+
+.label.shipDestroyedLabel .text {
+    -fx-strikethrough: true;
+    -fx-font-weight: bold;
+}
+
+.label .text {
+    -fx-strikethrough: false;
+    -fx-font-weight: bold;
+}
+
+#shipOwnerLabel.label .text {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-underline: true;
+}

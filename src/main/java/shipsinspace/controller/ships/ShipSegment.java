@@ -41,4 +41,11 @@ public class ShipSegment extends Coordinates {
     public void setVisible(boolean visible) {
         isVisible = visible;
     }
+
+    @Override
+    public String toString() {
+        return "ShipSegment{" +
+                "isDestroyed=" + isDestroyed +
+                '}';
+    }
 }

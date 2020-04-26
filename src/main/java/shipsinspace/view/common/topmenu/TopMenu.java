@@ -64,7 +64,7 @@ public class TopMenu {
         menuBar.getMenus().addAll(fileMenu, soundsMenu, aboutMenu);
 
         // Styling
-        menuBar.getStylesheets().add(TopMenu.class.getResource("/css/topBarRegionStyle.css").toExternalForm());
+        menuBar.getStylesheets().add(TopMenu.class.getResource("/css/common/topBarRegionStyle.css").toExternalForm());
 
         return menuBar;
     }

@@ -2,9 +2,11 @@ package shipsinspace.registers;
 
 import shipsinspace.common.Coordinates;
 import shipsinspace.controller.player.Player;
+import shipsinspace.controller.ships.ShipTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Singleton pattern to keep easy one-point access to game controller instance.
@@ -20,8 +22,11 @@ public final class GameRegister {
     private String humanPlayerName = "Player";
     private String computerPlayerName = "Computer";
 
-    private List<String> humanShipList;
-    private List<String> computerShipList;
+    private List<String> humanRemainingShipsList;
+    private List<String> computerRemainingShipsList;
+
+    private Map<String, List<Boolean>> humanAllShipsStatus;
+    private Map<String, List<Boolean>> computerAllShipsStatus;
 
     private Coordinates coordinatesHumanPlayerShotAtThisTurn = null;
     private Coordinates coordinatesComputerPlayerShotAtThisTurn = null;
@@ -45,8 +50,8 @@ public final class GameRegister {
 
         humanPlayerName = "Player";
 
-        humanShipList = new ArrayList<>();
-        computerShipList = new ArrayList<>();
+        humanRemainingShipsList = new ArrayList<>();
+        computerRemainingShipsList = new ArrayList<>();
 
         coordinatesHumanPlayerShotAtThisTurn = null;
         coordinatesComputerPlayerShotAtThisTurn = null;
@@ -77,20 +82,36 @@ public final class GameRegister {
         this.gameDifficulty = gameDifficulty;
     }
 
-    public void setHumanShipList(List<String> humanShipList) {
-        this.humanShipList = humanShipList;
+    public void setHumanRemainingShipsList(List<String> humanRemainingShipsList) {
+        this.humanRemainingShipsList = humanRemainingShipsList;
     }
 
-    public void setComputerShipList(List<String> computerShipList) {
-        this.computerShipList = computerShipList;
+    public void setComputerRemainingShipsList(List<String> computerRemainingShipsList) {
+        this.computerRemainingShipsList = computerRemainingShipsList;
     }
 
-    public List<String> getHumanShipList() {
-        return humanShipList;
+    public List<String> getHumanRemainingShipsList() {
+        return humanRemainingShipsList;
     }
 
-    public List<String> getComputerShipList() {
-        return computerShipList;
+    public List<String> getComputerRemainingShipsList() {
+        return computerRemainingShipsList;
+    }
+
+    public Map<String, List<Boolean>> getHumanAllShipsStatus() {
+        return humanAllShipsStatus;
+    }
+
+    public void setHumanAllShipsStatus(Map<String, List<Boolean>> humanAllShipsStatus) {
+        this.humanAllShipsStatus = humanAllShipsStatus;
+    }
+
+    public Map<String, List<Boolean>> getComputerAllShipsStatus() {
+        return computerAllShipsStatus;
+    }
+
+    public void setComputerAllShipsStatus(Map<String, List<Boolean>> computerAllShipsStatus) {
+        this.computerAllShipsStatus = computerAllShipsStatus;
     }
 
     public String getGameStatus() {

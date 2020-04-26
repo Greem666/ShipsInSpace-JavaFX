@@ -10,9 +10,7 @@ import shipsinspace.controller.ships.attackTypes.Attack;
 import shipsinspace.controller.ships.attackTypes.StandardAttack;
 import shipsinspace.registers.GameRegister;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GameController {
@@ -44,30 +42,60 @@ public class GameController {
         Player ownerOfHitObject = humanFireAtCoordinates(coordinatesHumanPlayerShotAt);
         gameRegister.setCoordinatesHumanPlayerShotAtThisTurn(coordinatesHumanPlayerShotAt);
         gameRegister.setObjectHumanPlayerHitThisTurn(ownerOfHitObject);
-        gameRegister.setHumanShipList(
-                this.humanPlayer.getShips().stream()
-                        .filter(ship -> !ship.isDestroyed())
-                        .map(ShipTemplate::getShipName)
-                        .collect(Collectors.toList())
-        );
+        updateHumanAndComputerShipsStatusInRegister();
 
         Player computerHitSomething = computerMove();
         // gameRegister.setCoordinatesComputerPlayerShotAtThisTurn();   is set in computerMove() method
         gameRegister.setObjectComputerPlayerHitThisTurn(computerHitSomething);
-        gameRegister.setComputerShipList(
-                this.computerPlayer.getShips().stream()
-                        .filter(ship -> !ship.isDestroyed())
-                        .map(ShipTemplate::getShipName)
-                        .collect(Collectors.toList())
-        );
+        updateHumanAndComputerShipsStatusInRegister();
 
-        if (gameRegister.getHumanShipList().size() == 0) {
+        if (gameRegister.getHumanRemainingShipsList().size() == 0) {
             gameRegister.setGameStatus("human_lost");
-        } else if (gameRegister.getComputerShipList().size() == 0) {
+        } else if (gameRegister.getComputerRemainingShipsList().size() == 0) {
             gameRegister.setGameStatus("computer_lost");
         } else {
             gameRegister.setGameStatus("game_on");
         }
+    }
+
+    private void updateHumanAndComputerShipsStatusInRegister() {
+        updateHumanShipsStatusInRegister();
+        updateComputerShipStatusInRegister();
+    }
+
+    private void updateHumanShipsStatusInRegister() {
+        updateShipStatusInRegister(this.humanPlayer);
+    }
+
+    private void updateComputerShipStatusInRegister() {
+        updateShipStatusInRegister(this.computerPlayer);
+    }
+
+    private void updateShipStatusInRegister(Player player) {
+        if (player instanceof ComputerPlayer) {
+            gameRegister.setComputerRemainingShipsList(getListOfActiveShipNames(player));
+            gameRegister.setComputerAllShipsStatus(getListOfAllShipsStatus(player));
+        } else {
+            gameRegister.setHumanRemainingShipsList(getListOfActiveShipNames(player));
+            gameRegister.setHumanAllShipsStatus(getListOfAllShipsStatus(player));
+        }
+    }
+
+    private List<String> getListOfActiveShipNames(Player player) {
+        return player.getShips().stream()
+                .filter(ship -> !ship.isDestroyed())
+                .map(ShipTemplate::getShipName)
+                .collect(Collectors.toList());
+    }
+
+    private Map<String, List<Boolean>> getListOfAllShipsStatus(Player player) {
+        return player.getShips().stream()
+                .collect(Collectors.toMap(
+                        ShipTemplate::getShipName,
+                        ship -> ship.getShipSegments().stream()
+                                .map(ShipSegment::isDestroyed)
+                                .collect(Collectors.toList())
+                ));
     }
 
     public Player humanFireAtCoordinates(Coordinates coordinatesHumanPlayerShotAt) {
@@ -94,11 +122,13 @@ public class GameController {
     public void generateHumanPlayer() {
         this.humanPlayer = new Player("Human");
         this.placeShips(this.humanPlayer, true);
+        updateHumanShipsStatusInRegister();
     }
 
     public void generateComputerPlayer(int gameDifficulty) {
         this.computerPlayer = new ComputerPlayer(gameDifficulty);
         this.placeShips(this.computerPlayer, this.humanPlayer.getFieldsOccupiedByShips(), false);
+        updateComputerShipStatusInRegister();
     }
 
     public void placeShips(Player player, boolean createVisible) {

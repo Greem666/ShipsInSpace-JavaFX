@@ -12,7 +12,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import shipsinspace.view.gameBoardScene.interfaces.BottomMenuElements;
 
-public class AttackButtons implements BottomMenuElements {
+public class AttackButtons {
     private String activeAttack;
     private double iconSize;
 
@@ -20,7 +20,6 @@ public class AttackButtons implements BottomMenuElements {
         this.iconSize = iconSize;
     }
 
-    @Override
     public Region generateElement() {
         // ATTACK BUTTONS PANEL
         VBox attackButtonsPanel = new VBox();

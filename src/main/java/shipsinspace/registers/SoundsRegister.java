@@ -27,7 +27,7 @@ public class SoundsRegister {
     public void playBackgroundMusic() {
         backgroundMusicPlayer.seek(Duration.ZERO);
         backgroundMusicPlayer.play();
-        backgroundMusicPlayer.setVolume(0.5);
+        backgroundMusicPlayer.setVolume(0.2);
         backgroundMusicPlayer.setOnEndOfMedia(() -> {
             backgroundMusicPlayer.seek(Duration.ZERO);
         });
@@ -70,6 +70,7 @@ public class SoundsRegister {
         Media shotSound = new Media(new File(soundPath).toURI().toString());
         this.sfxPlayer = new MediaPlayer(shotSound);
         this.sfxPlayer.setRate(playbackRate);
+        this.sfxPlayer.setVolume(0.2);
         this.sfxPlayer.play();
     }
 }

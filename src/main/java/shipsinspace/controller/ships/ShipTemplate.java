@@ -63,4 +63,12 @@ public abstract class ShipTemplate {
         return this.shipSegments.stream()
                 .allMatch(ShipSegment::isDestroyed);
     }
+
+    @Override
+    public String toString() {
+        return "ShipTemplate{" +
+                "shipSegments=" + shipSegments +
+                ", shipName='" + shipName + '\'' +
+                '}';
+    }
 }

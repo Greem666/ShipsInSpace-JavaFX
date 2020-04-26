@@ -13,6 +13,7 @@ public class BottomMenu {
     private int windowWidth;
     private int windowHeight;
     private int tilesCount;
+    private HBox bottomControlPanel = new HBox();
 
     public BottomMenu(int bottomMenuWidth, int bottomMenuHeight, int tilesCount) {
         this.windowWidth = bottomMenuWidth;
@@ -26,15 +27,35 @@ public class BottomMenu {
 
         double bottomMenuHeight = ((double)windowHeight) * 0.25;
         // BOTTOM CONTROL PANEL
-        HBox bottomControlPanel = new HBox();
-        bottomControlPanel.getChildren().addAll(
+
+        this.bottomControlPanel.getChildren().addAll(
                 playerShipsStatusPanel.generateElement(),
                 computerShipsStatusPanel.generateElement()
         );
-        bottomControlPanel.setSpacing(windowWidth * 0.1);
-        bottomControlPanel.setAlignment(Pos.CENTER);
+        this.bottomControlPanel.setSpacing(windowWidth * 0.1);
+        this.bottomControlPanel.setAlignment(Pos.CENTER);
 
-        return bottomControlPanel;
+        return this.bottomControlPanel;
+    }
+
+    public HBox getBottomControlPanel() {
+        return this.bottomControlPanel;
+    }
+
+    public void updateHumanPlayerShipsStatusPanel() {
+        this.bottomControlPanel.getChildren().remove(0, 2);
+        this.bottomControlPanel.getChildren().addAll(
+                this.playerShipsStatusPanel.generateElement(),
+                this.computerShipsStatusPanel.getShipStatusPanel()
+        );
+    }
+
+    public void updateComputerPlayerShipsStatusPanel() {
+        this.bottomControlPanel.getChildren().remove(0, 2);
+        this.bottomControlPanel.getChildren().addAll(
+                this.playerShipsStatusPanel.getShipStatusPanel(),
+                this.computerShipsStatusPanel.generateElement()
+        );
     }
 
 }

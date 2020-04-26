@@ -79,7 +79,7 @@ public class GameOver {
 
         gameOverLayout.getChildren().addAll(youWonOrLostText, gameOverText, playAgainButton, quitButton);
         Scene gameOverScene = new Scene(homeScreenObjectsLayout, ScenesRegister.sceneWidth, ScenesRegister.sceneHeight);
-        gameOverScene.getStylesheets().add(DifficultySelection.class.getResource("/css/gameOverSceneStyles.css").toExternalForm());
+        gameOverScene.getStylesheets().add(DifficultySelection.class.getResource("/css/gameOverScene/gameOverSceneStyles.css").toExternalForm());
 
         return gameOverScene;
     }

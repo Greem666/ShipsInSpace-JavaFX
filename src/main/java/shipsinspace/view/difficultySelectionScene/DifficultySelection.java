@@ -80,7 +80,7 @@ public class DifficultySelection {
         difficultySelectionLayout.getChildren().addAll(selectDifficultyText, easyButton, mediumButton, hardButton);
 
         Scene difficultySelectionScene = new Scene(difficultySelectionScreenObjectsLayout, ScenesRegister.sceneWidth, ScenesRegister.sceneHeight);
-        difficultySelectionScene.getStylesheets().add(DifficultySelection.class.getResource("/css/difficultySelectionSceneStyles.css").toExternalForm());
+        difficultySelectionScene.getStylesheets().add(DifficultySelection.class.getResource("/css/difficultySelectionScene/difficultySelectionSceneStyles.css").toExternalForm());
 
         return difficultySelectionScene;
     }

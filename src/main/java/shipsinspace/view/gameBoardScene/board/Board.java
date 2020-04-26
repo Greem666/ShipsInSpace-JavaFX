@@ -3,8 +3,6 @@ package shipsinspace.view.gameBoardScene.board;
 import javafx.animation.*;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
@@ -28,15 +26,12 @@ import shipsinspace.controller.GameController;
 import shipsinspace.controller.ships.attackTypes.Attack;
 import shipsinspace.registers.ScenesRegister;
 import shipsinspace.registers.SoundsRegister;
-import shipsinspace.view.difficultySelectionScene.DifficultySelection;
 import shipsinspace.view.gameBoardScene.board.elements.Effects;
 import shipsinspace.view.gameBoardScene.board.elements.ShipView;
 import shipsinspace.view.gameBoardScene.board.elements.Tile;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -142,6 +137,12 @@ public class Board {
 
         StackPane gameBoardLayout = new StackPane();
 
+        Rectangle bgRect = new Rectangle(600, 600);
+        bgRect.setFill(Color.TRANSPARENT);
+        bgRect.setStroke(Color.BLACK);
+        bgRect.setStrokeWidth(2);
+        bgRect.setMouseTransparent(true);
+
         Rectangle backgroundShadow = new Rectangle(600, 600);
         backgroundShadow.setFill(Color.TRANSPARENT);
         backgroundShadow.setMouseTransparent(true);
@@ -152,11 +153,9 @@ public class Board {
         announcementText.setTextAlignment(TextAlignment.CENTER);
         announcementText.setFont(Font.font("Verdena", FontWeight.BOLD, 45));
         announcementText.setFill(Color.TRANSPARENT);
-//        announcementText.setStroke(Color.YELLOW);
-//        announcementText.setStrokeWidth(2);
 
-        gameBoardTilesLayout.getStylesheets().add(Board.class.getResource("/css/gameBoardScene.css").toExternalForm());
-        gameBoardLayout.getChildren().addAll(gameBoardTilesLayout, backgroundShadow, announcementText);
+        gameBoardTilesLayout.getStylesheets().add(Board.class.getResource("/css/gameBoardScene/gameBoardScene.css").toExternalForm());
+        gameBoardLayout.getChildren().addAll(gameBoardTilesLayout, backgroundShadow, announcementText, bgRect);
 
         this.board = gameBoardLayout;
 
@@ -274,6 +273,8 @@ public class Board {
         Player playerHitByHumanPlayer = gameRegister.getOwnerOfHitObjectHitThisTurnByHumanPlayer();
         getEffectsFrom(clickedField).animateHumanPlayerExplosion();
 
+        ScenesRegister.getInstance().getGameBoard().updateSidePanelShipStatus(playerHitByHumanPlayer);
+
         redrawShipsOfHitParty(playerHitByHumanPlayer);
     }
 
@@ -282,6 +283,8 @@ public class Board {
         Player playerHitByComputerPlayer = gameRegister.getOwnerOfHitObjectHitThisTurnByComputerPlayer();
         Coordinates coordinatesAttackedByComputer = gameRegister.getCoordinatesComputerPlayerShotAtThisTurn();
         getEffectElementOnAttackedPanel(coordinatesAttackedByComputer).animateComputerPlayerExplosion();
+
+        ScenesRegister.getInstance().getGameBoard().updateSidePanelShipStatus(playerHitByComputerPlayer);
 
         redrawShipsOfHitParty(playerHitByComputerPlayer);
     }
