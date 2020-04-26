@@ -14,7 +14,7 @@ public class SidePanel {
     public SidePanel(int sidePanelWidth, int sidePanelHeight, String panelOwner, String shipSegmentImageName) {
         this.windowWidth = sidePanelWidth;
         this.windowHeight = sidePanelHeight;
-        this.playerShipsStatusPanel = new ShipsStatusPanel(panelOwner, shipSegmentImageName, sidePanelHeight * 0.04);
+        this.playerShipsStatusPanel = new ShipsStatusPanel(panelOwner, shipSegmentImageName, sidePanelHeight * 0.06);
     }
 
     public Region generateElement() {
