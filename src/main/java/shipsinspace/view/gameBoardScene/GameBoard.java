@@ -4,7 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
 import shipsinspace.controller.GameController;
 import shipsinspace.controller.player.Player;
@@ -50,22 +50,24 @@ public class GameBoard {
 
         // GAME SECTION
         Board board = new Board(this.backEnd, 600, 600);
-//        Rectangle bgRect = new Rectangle(600, 600);
-//        bgRect.setFill(Color.TRANSPARENT);
-//        bgRect.setStroke(Color.BLACK);
-//        bgRect.setStrokeWidth(2);
-//        StackPane centerStack = new StackPane();
-//        centerStack.getChildren().addAll(board.generateElement());
-//        Region gameBoard = ;
         this.windowLayout.setCenter(board.generateElement());
-//        BorderPane.setAlignment(gameBoard, Pos.CENTER);
 
 //        LEFT PANEL
         leftPanel = new SidePanel(GameBoard.sidePanelWidth, 600, "Player", "shipSegmentPlayer.png");
         Region leftPanelRegion = leftPanel.generateElement();
 
         this.leftBackground = new Rectangle(GameBoard.sidePanelWidth, 600);
-        this.leftBackground.setFill(Color.TRANSPARENT);
+        RadialGradient leftBackgroundGradient = new RadialGradient(
+                0,
+                -1.0,
+                GameBoard.sidePanelWidth / 2.0,
+                600 / 2.0,
+                280,
+                false,
+                CycleMethod.NO_CYCLE,
+                new Stop(0, Color.rgb(89, 255, 253, 1.0)),
+                new Stop(1, Color.rgb(11, 12, 17, 1.0)));
+        this.leftBackground.setFill(leftBackgroundGradient);
         this.leftBackground.setStroke(Color.BLACK);
         this.leftBackground.setStrokeWidth(2);
 
@@ -80,7 +82,17 @@ public class GameBoard {
         Region rightPanelRegion = rightPanel.generateElement();
 
         this.rightBackground = new Rectangle(GameBoard.sidePanelWidth, 600);
-        this.rightBackground.setFill(Color.TRANSPARENT);
+        RadialGradient rightBackgroundGradient = new RadialGradient(
+                0,
+                1.0,
+                GameBoard.sidePanelWidth / 2.0,
+                600 / 2.0,
+                280,
+                false,
+                CycleMethod.NO_CYCLE,
+                new Stop(0, Color.rgb(255, 89, 89, 1.0)),
+                new Stop(1, Color.rgb(11, 12, 17, 1.0)));
+        this.rightBackground.setFill(rightBackgroundGradient);
         this.rightBackground.setStroke(Color.BLACK);
         this.rightBackground.setStrokeWidth(2);
 

@@ -19,17 +19,28 @@
 /*}*/
 
 .label.shipDestroyedLabel .text {
+    -fx-font-size: 25px;
+    -fx-fill: white;
     -fx-strikethrough: true;
     -fx-font-weight: bold;
+    -fx-stroke-width: 1;
+    -fx-stroke: black;
 }
 
 .label .text {
+    -fx-font-size: 25px;
+    -fx-fill: white;
     -fx-strikethrough: false;
     -fx-font-weight: bold;
+    -fx-stroke-width: 1;
+    -fx-stroke: black;
 }
 
 #shipOwnerLabel.label .text {
-    -fx-font-size: 20px;
+    -fx-font-size: 35px;
+    -fx-fill: white;
     -fx-font-weight: bold;
     -fx-underline: true;
+    -fx-stroke-width: 1;
+    -fx-stroke: black;
 }
